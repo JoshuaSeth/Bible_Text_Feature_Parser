@@ -5,6 +5,8 @@ import Strongs
 import Terms as t
 import pickle
 
+#Initial Code
+
 def ConvertToWordsAndVersesAndStrongs(input):
     return input[['〔Book｜Chapter｜Verse〕', '〔OGNTk｜OGNTu｜OGNTa｜lexeme｜rmac｜sn〕']]
 
