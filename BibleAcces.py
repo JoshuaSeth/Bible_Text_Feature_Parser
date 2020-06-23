@@ -25,6 +25,7 @@ def ParseSeqToBibleBook(book):
     return string
 
 
+
 def ParseSequence(sequence):
     sequence = str(sequence)
     sequence =sequence.replace(")", "")
