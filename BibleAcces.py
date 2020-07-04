@@ -24,8 +24,22 @@ def DivisionToBibleBookString(book):
     string = string + asList[1]+":" +asList[2]
     return string
 
+def ContainsNumber(inputString):
+     return any(char.isdigit() for char in inputString)
 
 def DivisionToBCVString(division):
+    if not ContainsNumber(division):
+        print("WARNING, this division contains no numbers and will be skipped")
+        return ""
+
+    if division == "":
+        print("WARNING, this division is empty and will be skipped")
+        return ""
+
+    if not division.__contains__(":"):
+        print("WARNING, this division is incorrectly denoted and will be skipped")
+        return ""
+
     division = str(division)
     division =division.replace(")", "")
     division =division.replace("(", "")
@@ -44,13 +58,19 @@ def DivisionToBCVString(division):
 
 def GetData(sequence, onlyWordCount):
     #Check if it is a valid sequence
-    print(sequence)
+    print("Sequence: " +str(sequence))
     if pd.isna(sequence):
         print("Error, a NAN found, skipping this sequence")
         return None
 
-    #Count Propositions, preference terms and, de/oun ratios
+    parsedSequence = DivisionToBCVString(sequence)
 
+    if parsedSequence == "":
+        print("Warning, an empty sequence returned from parser, skipping this sequence")
+        return None
+
+
+    #Count Propositions, preference terms and, de/oun ratios
     #Johaninne Preference Words
     ptCount = {}
     if (not onlyWordCount):
@@ -76,7 +96,7 @@ def GetData(sequence, onlyWordCount):
     featureCount["Historical Present"] = 0
 
     sequenceTotalWords = 0
-    parsedSequence = DivisionToBCVString(sequence)
+
 
 
     for verseTag in parsedSequence:
@@ -139,35 +159,54 @@ def GetVerseAndLexemeDF():
 
 GetVerseAndLexemeDF()
 
-sequencesList = pd.read_excel('outline_John_kopie.xlsx')
-verseDivisionList = sequencesList["Morris"]
 
-#print(ParseSequence(morrisSequence[3]))
 datasForPassages = {}
-for sequence in verseDivisionList:
-    data= GetData(sequence)
-    if data is not None:
-        wordCount = data[0]["Word Count"]
-        print(wordCount)
-        dictInd = 0
-        for dictionary in data:
-            dictInd +=1
-            for dataPointKey, dataPointVal in dictionary.items():
-                newKey = str(dictInd) + ": " + str(dataPointKey)
-                ratioKey = str(dictInd) + ": " + str(dataPointKey) + " ratio"
-                if not datasForPassages.__contains__(newKey):
-                    datasForPassages[newKey] = []
-                datasForPassages[newKey].append(dataPointVal)
 
-                #Ratio's
-                if isinstance(dataPointVal, int):
-                    if not datasForPassages.__contains__(ratioKey):
-                        datasForPassages[ratioKey] = []
-                    if dataPointVal != 0 and wordCount!=0:
-                        datasForPassages[ratioKey].append(dataPointVal/wordCount)
-                    else:
-                        datasForPassages[ratioKey].append(0)
-    print(datasForPassages)
+def ExecuteProgramForColumn(verseDivisionList):
+    for sequence in verseDivisionList:
+        data = GetData(sequence, onlyWordCount=OnlyWordCount)
+        if data is not None:
+            wordCount = data[0]["Word Count"]
+            print(wordCount)
+            dictInd = 0
+            for dictionary in data:
+                dictInd += 1
+                for dataPointKey, dataPointVal in dictionary.items():
+                    newKey = str(dictInd) + ": " + str(dataPointKey)
+                    ratioKey = str(dictInd) + ": " + str(dataPointKey) + " ratio"
+                    if not datasForPassages.__contains__(newKey):
+                        datasForPassages[newKey] = []
+                    datasForPassages[newKey].append(dataPointVal)
+
+                    # Ratio's
+                    if isinstance(dataPointVal, int):
+                        if not datasForPassages.__contains__(ratioKey):
+                            datasForPassages[ratioKey] = []
+                        if dataPointVal != 0 and wordCount != 0:
+                            datasForPassages[ratioKey].append(dataPointVal / wordCount)
+                        else:
+                            datasForPassages[ratioKey].append(0)
+        print(datasForPassages)
+
+OnlyWordCount = True
+ForeachColumn = False
+
+excelWithSequences = pd.read_excel('Outline John.xlsx')
+verseDivisionList = excelWithSequences["Morris"]
+
+
+
+
+if(ForeachColumn):
+    # creating a list of dataframe columns
+    columns = list(excelWithSequences)
+
+    for i in columns:
+        ExecuteProgramForColumn(i)
+
+if not ForeachColumn:
+    ExecuteProgramForColumn(verseDivisionList)
+
 
 with open('dictionaryData.pickle', 'wb') as f:
     pickle.dump(datasForPassages, f)
