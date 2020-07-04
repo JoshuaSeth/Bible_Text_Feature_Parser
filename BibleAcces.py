@@ -7,58 +7,67 @@ import pickle
 
 #Initial Code
 
-def ConvertToWordsAndVersesAndStrongs(input):
+def ExtractVerseAndWordColumn(input):
     return input[['〔Book｜Chapter｜Verse〕', '〔OGNTk｜OGNTu｜OGNTa｜lexeme｜rmac｜sn〕']]
 
-def SelectWord(input):
+def SelectLexemeFromCell(input):
     return input.replace("〕", "").replace("〔", "").split("｜")[3]
 
-def AddColumnWithSingleWord(input):
-    t = input['〔OGNTk｜OGNTu｜OGNTa｜lexeme｜rmac｜sn〕'].apply(SelectWord)
+def AddColumnWithLexeme(input):
+    t = input['〔OGNTk｜OGNTu｜OGNTa｜lexeme｜rmac｜sn〕'].apply(SelectLexemeFromCell)
     input['v'] = t
     return input
 
-def ParseSeqToBibleBook(book):
+def DivisionToBibleBookString(book):
     asList= book.replace("〕", "").replace("〔", "").split("｜")
     string = "JHN "
     string = string + asList[1]+":" +asList[2]
     return string
 
 
-
-def ParseSequence(sequence):
-    sequence = str(sequence)
-    sequence =sequence.replace(")", "")
-    sequence =sequence.replace("(", "")
-    sequence = ''.join(c for c in sequence if c not in ascii_letters)
-    correspondingLabels = []
-    chapterVersesSplit = sequence.split(":")
+def DivisionToBCVString(division):
+    division = str(division)
+    division =division.replace(")", "")
+    division =division.replace("(", "")
+    division = ''.join(c for c in division if c not in ascii_letters)
+    BCVString = []
+    chapterVersesSplit = division.split(":")
     if(chapterVersesSplit[1].__contains__('-')):
         verses = chapterVersesSplit[1].split("-")
         string = "〔43｜"
         for versNr in range(int(verses[0]), int(verses[1])+1):
-            correspondingLabels.append(string+chapterVersesSplit[0]+"｜"+str(versNr)+"〕")
+            BCVString.append(string+chapterVersesSplit[0]+"｜"+str(versNr)+"〕")
     else:
         string = "〔43｜"
-        correspondingLabels.append(string + chapterVersesSplit[0] + "｜" + str(chapterVersesSplit[1]) + "〕")
-    return correspondingLabels
+        BCVString.append(string + chapterVersesSplit[0] + "｜" + str(chapterVersesSplit[1]) + "〕")
+    return BCVString
 
-def GetData(sequence):
+def GetData(sequence, onlyWordCount):
+    #Check if it is a valid sequence
     print(sequence)
     if pd.isna(sequence):
         print("Error, a NAN found, skipping this sequence")
         return None
+
+    #Count Propositions, preference terms and, de/oun ratios
+
+    #Johaninne Preference Words
     ptCount = {}
-    for term in t.terms:
-        ptCount[term] = 0
+    if (not onlyWordCount):
+        for term in t.terms:
+            ptCount[term] = 0
 
+    #Propositions
     prpCount = {}
-    for term in t.prepositions:
-        prpCount[term] = 0
+    if (not onlyWordCount):
+        for term in t.prepositions:
+            prpCount[term] = 0
 
+    #De/Oun
     deounCount = {}
-    for term in t.deounlist:
-        deounCount[term] = 0
+    if (not onlyWordCount):
+        for term in t.deounlist:
+            deounCount[term] = 0
 
     featureCount = {}
     featureCount["Hapax Legomena"] = 0
@@ -66,34 +75,39 @@ def GetData(sequence):
     featureCount["Foreign Words"] = 0
     featureCount["Historical Present"] = 0
 
-    hapaxes = []
     sequenceTotalWords = 0
-    parsedSequence = ParseSequence(sequence)
+    parsedSequence = DivisionToBCVString(sequence)
 
 
     for verseTag in parsedSequence:
-        featureCount['Historical Present']+=mur.MarkUpContainsHistoricalPresent(ParseSeqToBibleBook(verseTag))
-        rowsForVerse = GJohnVersesAndWords.loc[GJohnVersesAndWords['〔Book｜Chapter｜Verse〕'] == verseTag]
+        #Select all rows from df which are part of this verse
+        rowsForVerse = GJohnVerseAndLexeme.loc[GJohnVerseAndLexeme['〔Book｜Chapter｜Verse〕'] == verseTag]
         sequenceTotalWords += len(rowsForVerse)
-        for wordRow in rowsForVerse.itertuples():
-            greekWord = wordRow[3]
-            count = len(GJohnVersesAndWords[GJohnVersesAndWords['v'] == str(greekWord)])
-            if count < 2:
-                featureCount['Hapax Legomena']+=1
-            if Strongs.compoundWords.__contains__(greekWord):
-                featureCount['Compound Words']+=1
-                print(greekWord + " is a compound")
-            if Strongs.foreignWords.__contains__(greekWord):
-                if(not greekWord.__contains__('Ἰησοῦς')):
-                    featureCount['Foreign Words']+=1
-                    print(greekWord + " is a foreign word")
 
-            if ptCount.__contains__(greekWord):
-                ptCount[greekWord]+=1
-            if prpCount.__contains__(greekWord):
-                prpCount[greekWord]+=1
-            if deounCount.__contains__(greekWord):
-                deounCount[greekWord]+=1
+        if(not onlyWordCount):
+            #Historical presents are counted for the whole verse so not per word row of the verse
+            featureCount['Historical Present'] += mur.MarkUpContainsHistoricalPresent(
+                DivisionToBibleBookString(verseTag))
+
+            for wordRow in rowsForVerse.itertuples():
+                greekWord = wordRow[3]
+                count = len(GJohnVerseAndLexeme[GJohnVerseAndLexeme['v'] == str(greekWord)])
+                if count < 2:
+                    featureCount['Hapax Legomena']+=1
+                if Strongs.compoundWords.__contains__(greekWord):
+                    featureCount['Compound Words']+=1
+                    print(greekWord + " is a compound")
+                if Strongs.foreignWords.__contains__(greekWord):
+                    if(not greekWord.__contains__('Ἰησοῦς')):
+                        featureCount['Foreign Words']+=1
+                        print(greekWord + " is a foreign word")
+
+                if ptCount.__contains__(greekWord):
+                    ptCount[greekWord]+=1
+                if prpCount.__contains__(greekWord):
+                    prpCount[greekWord]+=1
+                if deounCount.__contains__(greekWord):
+                    deounCount[greekWord]+=1
 
     metadata = {}
     metadata['Passage'] = sequence
@@ -110,23 +124,27 @@ class Chapter():
         self.index = 0
         self.hapaxes = []
 
-def PrepareBibleData():
-    global GJohnVersesAndWords
+def GetVerseAndLexemeDF():
+    global GJohnVerseAndLexeme
     bibleData = pd.read_csv("bible.csv", sep='\t')
-    bibleDataVersesAndWords = ConvertToWordsAndVersesAndStrongs(bibleData)
-    bibleDataVersesAndWords = AddColumnWithSingleWord(bibleDataVersesAndWords)
+    #COMMENTED OUT SINCE WE DO IT NOW ONLY FOR JOHNS GOSPEL
+    # bibleDataVersesAndWords = ExtractVerseAndWordColumn(bibleData)
+    # bibleDataVersesAndWords = AddColumnWithSingleWord(bibleDataVersesAndWords)
+
+    #Whenever something is part of chapter 43 it is Johns gospel, select all rows with 〔43 as chapter in their column
     gJohnData = bibleData[bibleData['〔Book｜Chapter｜Verse〕'].str.contains("〔43")]
-    GJohnVersesAndWords = ConvertToWordsAndVersesAndStrongs(gJohnData)
-    GJohnVersesAndWords = AddColumnWithSingleWord(GJohnVersesAndWords)
+    GJohnVerseAndLexeme = ExtractVerseAndWordColumn(gJohnData)
+    GJohnVerseAndLexeme = AddColumnWithLexeme(GJohnVerseAndLexeme)
 
 
-PrepareBibleData()
+GetVerseAndLexemeDF()
 
 sequencesList = pd.read_excel('outline_John_kopie.xlsx')
-morrisSequence = sequencesList["Morris"]
+verseDivisionList = sequencesList["Morris"]
+
 #print(ParseSequence(morrisSequence[3]))
 datasForPassages = {}
-for sequence in morrisSequence:
+for sequence in verseDivisionList:
     data= GetData(sequence)
     if data is not None:
         wordCount = data[0]["Word Count"]
@@ -170,10 +188,10 @@ def GetHapaxForGospel():
         chapter = Chapter()
         chapter.index = i
         chapters[str(i)] = chapter
-    for word in GJohnVersesAndWords.itertuples():
+    for word in GJohnVerseAndLexeme.itertuples():
         chapterCount = word[1].split("｜")[1]
 
-        count = len(GJohnVersesAndWords[GJohnVersesAndWords['v'] == str(word[3])])
+        count = len(GJohnVerseAndLexeme[GJohnVerseAndLexeme['v'] == str(word[3])])
         if count < 2:
             print("Chapter " + str(chapterCount) + word[1] + ": " + word[3] + " is a hapax L, appears: " + str(count))
             chapter = chapters[str(chapterCount)]
