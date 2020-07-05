@@ -2,15 +2,15 @@ import pandas as pd
 import pickle
 
 
-import DFPreparation as dfp
-GJohnVerseAndLexeme =  dfp.GetVerseAndLexemeDF()
+import BibleToDF as btf
+GJohnVerseAndLexeme =  btf.GetLexemesForBibleBook(42, True)
 
 
 datasForPassages = {}
 
 import FeatureScanner as fp
 
-OnlyWordCount = True
+OnlyWordCount = False
 ForeachColumn = False
 
 excelWithSequences = pd.read_excel('Outline John.xlsx')
