@@ -3,7 +3,7 @@ import pickle
 
 
 import BibleToDF as btf
-GJohnVerseAndLexeme =  btf.GetLexemesForBibleBook(42, True)
+GJohnVerseAndLexeme =  btf.GetLexemesForBibleBook(43, True)
 
 
 datasForPassages = {}
