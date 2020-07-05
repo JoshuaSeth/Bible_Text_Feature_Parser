@@ -27,7 +27,6 @@ if(ForeachColumn):
 if not ForeachColumn:
     fp.ReadFeaturesForColumn(verseDivisionList, datasForPassages, OnlyWordCount,GJohnVerseAndLexeme)
 
-
 with open('dictionaryData.pickle', 'wb') as f:
     pickle.dump(datasForPassages, f)
 
