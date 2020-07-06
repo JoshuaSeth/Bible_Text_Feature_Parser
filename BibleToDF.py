@@ -6,7 +6,12 @@ def AddColumnWithLexeme(input):
     return input
 
 def SelectLexemeFromCell(input):
-    return input.replace("〕", "").replace("〔", "").split("｜")[3]
+    list = input.replace("〕", "").replace("〔", "").split("｜")
+    return list[3]
+
+def SelectOGNToFromCell(input):
+    list = input.replace("〕", "").replace("〔", "").split("｜")
+    return list[2]
 
 def ExtractVerseAndWordColumn(input):
     return input[['〔Book｜Chapter｜Verse〕', '〔OGNTk｜OGNTu｜OGNTa｜lexeme｜rmac｜sn〕']]

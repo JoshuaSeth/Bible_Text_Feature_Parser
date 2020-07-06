@@ -22,7 +22,7 @@ def GetFeaturesForPassage(passage, onlyCountWords, GJohnVerseAndLexeme):
     #Johaninne Preference Words
     ptCount = {}
     if (not onlyCountWords):
-        for term in t.terms:
+        for term in t.lexemes:
             ptCount[term] = 0
 
     #Propositions
