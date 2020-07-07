@@ -39,3 +39,5 @@ def DivisionToBCVString(division):
         string = "〔43｜"
         BCVString.append(string + chapterVersesSplit[0] + "｜" + str(chapterVersesSplit[1]) + "〕")
     return BCVString
+
+#Test
