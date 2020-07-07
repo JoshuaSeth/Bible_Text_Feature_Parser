@@ -1,8 +1,10 @@
 import pandas as pd
 
-def AddColumnWithLexeme(input):
-    t = input['〔OGNTk｜OGNTu｜OGNTa｜lexeme｜rmac｜sn〕'].apply(SelectLexemeFromCell)
-    input['v'] = t
+def AddLexemeAndWordColumn(input):
+    lexemeColumn = input['〔OGNTk｜OGNTu｜OGNTa｜lexeme｜rmac｜sn〕'].apply(SelectLexemeFromCell)
+    input['v'] = lexemeColumn
+    OGNToColumn = input['〔OGNTk｜OGNTu｜OGNTa｜lexeme｜rmac｜sn〕'].apply(SelectOGNToFromCell)
+    input['ognto'] = OGNToColumn
     return input
 
 def SelectLexemeFromCell(input):
@@ -26,5 +28,5 @@ def GetLexemesForBibleBook(bibleBookNr, onlyLexemes):
         return bibleBook
 
     BibleBookLexemes = ExtractVerseAndWordColumn(bibleBook)
-    BibleBookLexemes = AddColumnWithLexeme(BibleBookLexemes)
+    BibleBookLexemes = AddLexemeAndWordColumn(BibleBookLexemes)
     return BibleBookLexemes

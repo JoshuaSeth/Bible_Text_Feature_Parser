@@ -4,7 +4,7 @@ import MarkupReader as mur
 import Strongs
 import Terms as t
 
-def GetFeaturesForPassage(passage, onlyCountWords, GJohnVerseAndLexeme):
+def GetFeaturesForPassage(passage, onlyCountWords, GJohnVerseAndLexeme, useLexemes=False):
     #Check if it is a valid sequence
     print("Sequence: " + str(passage))
     if pd.isna(passage):
@@ -22,8 +22,12 @@ def GetFeaturesForPassage(passage, onlyCountWords, GJohnVerseAndLexeme):
     #Johaninne Preference Words
     ptCount = {}
     if (not onlyCountWords):
-        for term in t.lexemes:
-            ptCount[term] = 0
+        if useLexemes:
+            for term in t.lexemes:
+                ptCount[term] = 0
+        else:
+            for term in t.OGNToWords:
+                ptCount[term] = 0
 
     #Propositions
     prpCount = {}
@@ -38,7 +42,8 @@ def GetFeaturesForPassage(passage, onlyCountWords, GJohnVerseAndLexeme):
             deounCount[term] = 0
 
     featureCount = {}
-    featureCount["Hapax Legomena"] = 0
+    featureCount["Hapax Legomena Lemma"] = 0
+    featureCount['Hapax Legomena OGNTo Word'] = 0
     featureCount["Compound Words"] = 0
     featureCount["Foreign Words"] = 0
     featureCount["Historical Present"] = 0
@@ -58,24 +63,34 @@ def GetFeaturesForPassage(passage, onlyCountWords, GJohnVerseAndLexeme):
                 pp.DivisionToBibleBookString(verseTag))
 
             for wordRow in rowsForVerse.itertuples():
-                greekWord = wordRow[3]
-                count = len(GJohnVerseAndLexeme[GJohnVerseAndLexeme['v'] == str(greekWord)])
-                if count < 2:
-                    featureCount['Hapax Legomena']+=1
-                if Strongs.compoundWords.__contains__(greekWord):
-                    featureCount['Compound Words']+=1
-                    print(greekWord + " is a compound")
-                if Strongs.foreignWords.__contains__(greekWord):
-                    if(not greekWord.__contains__('Ἰησοῦς')):
-                        featureCount['Foreign Words']+=1
-                        print(greekWord + " is a foreign word")
+                lexeme = wordRow[3]
+                OGNToWord = wordRow[4]
+                lemmaCountInGJohn = len(GJohnVerseAndLexeme[GJohnVerseAndLexeme['v'] == str(lexeme)])
+                if lemmaCountInGJohn < 2:
+                    featureCount['Hapax Legomena Lemma']+=1
 
-                if ptCount.__contains__(greekWord):
-                    ptCount[greekWord]+=1
-                if prpCount.__contains__(greekWord):
-                    prpCount[greekWord]+=1
-                if deounCount.__contains__(greekWord):
-                    deounCount[greekWord]+=1
+                wordCountInGJohn = len(GJohnVerseAndLexeme[GJohnVerseAndLexeme['ognto'] == str(OGNToWord)])
+                if wordCountInGJohn < 2:
+                    featureCount['Hapax Legomena OGNTo Word'] += 1
+
+                if Strongs.compoundWords.__contains__(lexeme):
+                    featureCount['Compound Words']+=1
+                    print(lexeme + " is a compound")
+                if Strongs.foreignWords.__contains__(lexeme):
+                    if(not lexeme.__contains__('Ἰησοῦς')):
+                        featureCount['Foreign Words']+=1
+                        print(lexeme + " is a foreign word")
+
+                if useLexemes:
+                    if ptCount.__contains__(lexeme):
+                        ptCount[lexeme]+=1
+                if not useLexemes:
+                    if ptCount.__contains__(OGNToWord):
+                        ptCount[OGNToWord]+=1
+                if prpCount.__contains__(lexeme):
+                    prpCount[lexeme]+=1
+                if deounCount.__contains__(lexeme):
+                    deounCount[lexeme]+=1
 
     metadata = {}
     metadata['Passage'] = passage
