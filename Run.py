@@ -14,7 +14,7 @@ OnlyWordCount = False
 ForeachColumn = False
 
 excelWithSequences = pd.read_excel('Outline John.xlsx')
-verseDivisionList = excelWithSequences["Morris"]
+verseDivisionList = excelWithSequences["Revision of Personal Division"]
 
 
 if(ForeachColumn):
@@ -25,7 +25,7 @@ if(ForeachColumn):
         fp.ReadFeaturesForColumn(i, datasForPassages, OnlyWordCount,GJohnVerseAndLexeme)
 
 if not ForeachColumn:
-    fp.ReadFeaturesForColumn(verseDivisionList, datasForPassages, OnlyWordCount,GJohnVerseAndLexeme)
+    fp.ReadFeaturesForColumn(verseDivisionList, datasForPassages, OnlyWordCount,GJohnVerseAndLexeme, True)
 
 with open('dictionaryData.pickle', 'wb') as f:
     pickle.dump(datasForPassages, f)

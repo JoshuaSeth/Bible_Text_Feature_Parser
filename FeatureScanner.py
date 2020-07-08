@@ -102,9 +102,9 @@ def GetFeaturesForPassage(passage, onlyCountWords, GJohnVerseAndLexeme, useLexem
 
 
 
-def ReadFeaturesForColumn(verseDivisionList, datasForPassages, OnlyWordCount, GJohnVerseAndLexeme):
+def ReadFeaturesForColumn(verseDivisionList, datasForPassages, OnlyWordCount, GJohnVerseAndLexeme, UseLexemes=False):
     for sequence in verseDivisionList:
-        data = GetFeaturesForPassage(sequence, onlyCountWords=OnlyWordCount, GJohnVerseAndLexeme=GJohnVerseAndLexeme)
+        data = GetFeaturesForPassage(sequence, onlyCountWords=OnlyWordCount, GJohnVerseAndLexeme=GJohnVerseAndLexeme, useLexemes=UseLexemes)
         if data is not None:
             wordCount = data[0]["Word Count"]
             print(wordCount)
