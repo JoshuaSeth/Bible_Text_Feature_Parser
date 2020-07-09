@@ -22,6 +22,7 @@ def GetFeaturesForPassage(passage, onlyCountWords, GJohnVerseAndLexeme, useLexem
     #Johaninne Preference Words
     ptCount = {}
     if (not onlyCountWords):
+        ptCount["Total"] =0
         if useLexemes:
             for term in t.lexemes:
                 ptCount[term] = 0
@@ -29,9 +30,10 @@ def GetFeaturesForPassage(passage, onlyCountWords, GJohnVerseAndLexeme, useLexem
             for term in t.OGNToWords:
                 ptCount[term] = 0
 
-    #Propositions
+    #Prepositions
     prpCount = {}
     if (not onlyCountWords):
+        prpCount["Total"]=0
         for term in t.prepositions:
             prpCount[term] = 0
 
@@ -84,11 +86,14 @@ def GetFeaturesForPassage(passage, onlyCountWords, GJohnVerseAndLexeme, useLexem
                 if useLexemes:
                     if ptCount.__contains__(lexeme):
                         ptCount[lexeme]+=1
+                        ptCount["Total"] +=1
                 if not useLexemes:
                     if ptCount.__contains__(OGNToWord):
                         ptCount[OGNToWord]+=1
+                        ptCount["Total"] += 1
                 if prpCount.__contains__(lexeme):
                     prpCount[lexeme]+=1
+                    prpCount["Total"] += 1
                 if deounCount.__contains__(lexeme):
                     deounCount[lexeme]+=1
 
