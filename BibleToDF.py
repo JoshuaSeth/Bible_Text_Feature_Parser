@@ -1,4 +1,5 @@
 import pandas as pd
+import PassageParser as pps
 
 def AddLexemeAndWordColumn(input):
     lexemeColumn = input['〔OGNTk｜OGNTu｜OGNTa｜lexeme｜rmac｜sn〕'].apply(SelectLexemeFromCell)
@@ -18,6 +19,27 @@ def SelectOGNToFromCell(input):
 def ExtractVerseAndWordColumn(input):
     return input[['〔Book｜Chapter｜Verse〕', '〔OGNTk｜OGNTu｜OGNTa｜lexeme｜rmac｜sn〕']]
 
+def GetLexemesForDivision(divisionString):
+    """Returns a dataframe of the bible book by number. When onlyLexemes is true it will return only greek lexeme words with their verses. Else it will return more data like strongs etc."""
+    bibleData = pd.read_csv("bible.csv", sep='\t')
+
+    parsedDivision = pps.DivisionToBCVStringList(divisionString)
+
+    collectedRows = None
+
+    for VerseCode in parsedDivision:
+        relevantRows = bibleData[bibleData['〔Book｜Chapter｜Verse〕'].str.contains(VerseCode)]
+        if collectedRows is None:
+            collectedRows=relevantRows
+        else:
+            dfCollection = [collectedRows, relevantRows]
+            collectedRows = pd.concat(dfCollection)
+
+
+    RelevantRowsLexemes = ExtractVerseAndWordColumn(collectedRows)
+    RelevantRowsLexemes = AddLexemeAndWordColumn(RelevantRowsLexemes)
+    return RelevantRowsLexemes
+
 
 def GetLexemesForBibleBook(bibleBookNr, onlyLexemes):
     """Returns a dataframe of the bible book by number. When onlyLexemes is true it will return only greek lexeme words with their verses. Else it will return more data like strongs etc."""
@@ -30,3 +52,9 @@ def GetLexemesForBibleBook(bibleBookNr, onlyLexemes):
     BibleBookLexemes = ExtractVerseAndWordColumn(bibleBook)
     BibleBookLexemes = AddLexemeAndWordColumn(BibleBookLexemes)
     return BibleBookLexemes
+
+def GetALLNTLexemes():
+    bibleData = pd.read_csv("bible.csv", sep='\t')
+    bibleLexemes = ExtractVerseAndWordColumn(bibleData)
+    bibleLexemes = AddLexemeAndWordColumn(bibleLexemes)
+    return bibleLexemes

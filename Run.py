@@ -3,29 +3,21 @@ import pickle
 
 
 import BibleToDF as btf
+
+pericope = btf.GetLexemesForDivision("7:53-53&8:1-11")
 GJohnVerseAndLexeme =  btf.GetLexemesForBibleBook(43, True)
+NewTestament = btf.GetALLNTLexemes()
 
 
-datasForPassages = {}
 
 import FeatureScanner as fp
 
-OnlyWordCount = False
-ForeachColumn = False
 
 excelWithSequences = pd.read_excel('Outline John.xlsx')
 verseDivisionList = excelWithSequences["Revision of Personal Division"]
 
-
-if(ForeachColumn):
-    # creating a list of dataframe columns
-    columns = list(excelWithSequences)
-
-    for i in columns:
-        fp.ReadFeaturesForColumn(i, datasForPassages, OnlyWordCount,GJohnVerseAndLexeme)
-
-if not ForeachColumn:
-    fp.ReadFeaturesForColumn(verseDivisionList, datasForPassages, OnlyWordCount,GJohnVerseAndLexeme, True)
+datasForPassages = {}
+fp.ReadFeaturesForColumn(verseDivisionList, datasForPassages, False,GJohnVerseAndLexeme, True, NewTestament, pericope)
 
 with open('dictionaryData.pickle', 'wb') as f:
     pickle.dump(datasForPassages, f)

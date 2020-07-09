@@ -4,13 +4,16 @@ import MarkupReader as mur
 import Strongs
 import Terms as t
 
-def GetFeaturesForPassage(passage, onlyCountWords, GJohnVerseAndLexeme, useLexemes=False):
+def GetFeaturesForPassage(passage, onlyCountWords, GJohnVerseAndLexeme, useLexemesForPTTerms=False, NT=None, excludeForHLCount=None):
     #Check if it is a valid sequence
     print("Sequence: " + str(passage))
     if pd.isna(passage):
         print("Error, a NAN found, skipping this sequence")
         return None
 
+    isPA = False
+    if passage == "7:53-53&8:1-11":
+        isPA=True
     parsedSequence = pp.DivisionToBCVStringList(passage)
 
     if parsedSequence == "":
@@ -23,7 +26,7 @@ def GetFeaturesForPassage(passage, onlyCountWords, GJohnVerseAndLexeme, useLexem
     ptCount = {}
     if (not onlyCountWords):
         ptCount["Total"] =0
-        if useLexemes:
+        if useLexemesForPTTerms:
             for term in t.lexemes:
                 ptCount[term] = 0
         else:
@@ -46,6 +49,13 @@ def GetFeaturesForPassage(passage, onlyCountWords, GJohnVerseAndLexeme, useLexem
     featureCount = {}
     featureCount["Hapax Legomena Lemma"] = 0
     featureCount['Hapax Legomena OGNTo Word'] = 0
+    featureCount["Hapaxes in GJohn Lemma"] = []
+    featureCount["Hapaxes in GJohn OGNT"] = []
+    if NT is not None:
+        featureCount["Hapax Legomena Lemma NT"] = 0
+        featureCount['Hapax Legomena OGNTo Word NT'] = 0
+        featureCount["Hapaxes in NT Lemma"] = []
+        featureCount["Hapaxes in NT OGNT"] = []
     featureCount["Compound Words"] = 0
     featureCount["Foreign Words"] = 0
     featureCount["Historical Present"] = 0
@@ -65,15 +75,37 @@ def GetFeaturesForPassage(passage, onlyCountWords, GJohnVerseAndLexeme, useLexem
                 pp.DivisionToBibleBookString(verseTag))
 
             for wordRow in rowsForVerse.itertuples():
+
+                #Count 4 Hapax Legomena versions
+
                 lexeme = wordRow[3]
                 OGNToWord = wordRow[4]
-                lemmaCountInGJohn = len(GJohnVerseAndLexeme[GJohnVerseAndLexeme['v'] == str(lexeme)])
-                if lemmaCountInGJohn < 2:
-                    featureCount['Hapax Legomena Lemma']+=1
+                # John
+                lemmaCountInGJohn = len(GJohnVerseAndLexeme[GJohnVerseAndLexeme['v'] == str(lexeme)]) - len(excludeForHLCount[excludeForHLCount['v'] == str(lexeme)])
 
-                wordCountInGJohn = len(GJohnVerseAndLexeme[GJohnVerseAndLexeme['ognto'] == str(OGNToWord)])
-                if wordCountInGJohn < 2:
+                #if this is not the passge of the word is found only once it is HL, is this is the passge the passage count is subtracted fomr total count so 0 should be found
+                maxToBeFound =1
+                if not isPA:
+                    maxToBeFound+=1
+
+                if lemmaCountInGJohn < maxToBeFound and not featureCount["Hapaxes in GJohn Lemma"].__contains__(str(lexeme)):
+                    featureCount['Hapax Legomena Lemma']+=1
+                    featureCount["Hapaxes in GJohn Lemma"].append(str(lexeme))
+                wordCountInGJohn = len(GJohnVerseAndLexeme[GJohnVerseAndLexeme['ognto'] == str(OGNToWord)]) - len(excludeForHLCount[excludeForHLCount['ognto'] == str(OGNToWord)])
+                if wordCountInGJohn < maxToBeFound and not featureCount["Hapaxes in GJohn OGNT"].__contains__(str(OGNToWord)):
                     featureCount['Hapax Legomena OGNTo Word'] += 1
+                    featureCount["Hapaxes in GJohn OGNT"].append(str(OGNToWord))
+
+                #Whole NT
+                if NT is not None:
+                    lemmaCountinNT = len(NT[NT['v'] == str(lexeme)]) - len(excludeForHLCount[excludeForHLCount['v'] == str(lexeme)])
+                    if lemmaCountinNT < maxToBeFound and not featureCount["Hapaxes in NT Lemma"].__contains__(str(lexeme)):
+                        featureCount['Hapax Legomena Lemma NT'] += 1
+                        featureCount["Hapaxes in NT Lemma"].append(str(lexeme))
+                    wordCountInNT = len(NT[NT['ognto'] == str(OGNToWord)]) - len(excludeForHLCount[excludeForHLCount['ognto'] == str(OGNToWord)])
+                    if wordCountInNT < maxToBeFound and not featureCount["Hapaxes in NT OGNT"].__contains__(str(OGNToWord)):
+                        featureCount['Hapax Legomena OGNTo Word NT'] += 1
+                        featureCount["Hapaxes in NT OGNT"].append(str(OGNToWord))
 
                 if Strongs.compoundWords.__contains__(lexeme):
                     featureCount['Compound Words']+=1
@@ -83,11 +115,11 @@ def GetFeaturesForPassage(passage, onlyCountWords, GJohnVerseAndLexeme, useLexem
                         featureCount['Foreign Words']+=1
                         print(lexeme + " is a foreign word")
 
-                if useLexemes:
+                if useLexemesForPTTerms:
                     if ptCount.__contains__(lexeme):
                         ptCount[lexeme]+=1
                         ptCount["Total"] +=1
-                if not useLexemes:
+                if not useLexemesForPTTerms:
                     if ptCount.__contains__(OGNToWord):
                         ptCount[OGNToWord]+=1
                         ptCount["Total"] += 1
@@ -107,9 +139,9 @@ def GetFeaturesForPassage(passage, onlyCountWords, GJohnVerseAndLexeme, useLexem
 
 
 
-def ReadFeaturesForColumn(verseDivisionList, datasForPassages, OnlyWordCount, GJohnVerseAndLexeme, UseLexemes=False):
+def ReadFeaturesForColumn(verseDivisionList, datasForPassages, OnlyWordCount, GJohnVerseAndLexeme, UseLexemesForPTCount=False, NT=None, excludeForHLCount=None):
     for sequence in verseDivisionList:
-        data = GetFeaturesForPassage(sequence, onlyCountWords=OnlyWordCount, GJohnVerseAndLexeme=GJohnVerseAndLexeme, useLexemes=UseLexemes)
+        data = GetFeaturesForPassage(sequence, onlyCountWords=OnlyWordCount, GJohnVerseAndLexeme=GJohnVerseAndLexeme, useLexemesForPTTerms=UseLexemesForPTCount, NT=NT, excludeForHLCount=excludeForHLCount)
         if data is not None:
             wordCount = data[0]["Word Count"]
             print(wordCount)
