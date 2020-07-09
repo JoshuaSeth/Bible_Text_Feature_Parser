@@ -3,6 +3,7 @@ import PassageParser as pp
 import MarkupReader as mur
 import Strongs
 import Terms as t
+import CompoundWords as cw
 
 def GetFeaturesForPassage(passage, onlyCountWords, GJohnVerseAndLexeme, useLexemesForPTTerms=False, NT=None, excludeForHLCount=None):
     #Check if it is a valid sequence
@@ -107,7 +108,7 @@ def GetFeaturesForPassage(passage, onlyCountWords, GJohnVerseAndLexeme, useLexem
                         featureCount['Hapax Legomena OGNTo Word NT'] += 1
                         featureCount["Hapaxes in NT OGNT"].append(str(OGNToWord))
 
-                if Strongs.compoundWords.__contains__(lexeme):
+                if cw.compoundList.__contains__(lexeme):
                     featureCount['Compound Words']+=1
                     print(lexeme + " is a compound")
                 if Strongs.foreignWords.__contains__(lexeme):

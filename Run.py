@@ -17,7 +17,7 @@ excelWithSequences = pd.read_excel('Outline John.xlsx')
 verseDivisionList = excelWithSequences["Revision of Personal Division"]
 
 datasForPassages = {}
-fp.ReadFeaturesForColumn(verseDivisionList, datasForPassages, False,GJohnVerseAndLexeme, True, NewTestament, pericope)
+fp.ReadFeaturesForColumn(verseDivisionList, datasForPassages, False,GJohnVerseAndLexeme, True, None, pericope)
 
 with open('dictionaryData.pickle', 'wb') as f:
     pickle.dump(datasForPassages, f)

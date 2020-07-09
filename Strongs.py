@@ -40,5 +40,5 @@ for type_tag in root.findall('entries/'):
             AddToForeignList()
         if deriv.text.__contains__("Latin origin"):
             AddToForeignList()
-        if deriv.text.__contains__("uncertain origin"):
-            AddToForeignList()
+        # if deriv.text.__contains__("uncertain origin"):
+        #     AddToForeignList()

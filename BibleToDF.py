@@ -6,7 +6,13 @@ def AddLexemeAndWordColumn(input):
     input['v'] = lexemeColumn
     OGNToColumn = input['〔OGNTk｜OGNTu｜OGNTa｜lexeme｜rmac｜sn〕'].apply(SelectOGNToFromCell)
     input['ognto'] = OGNToColumn
+    CodeColumn = input['〔OGNTk｜OGNTu｜OGNTa｜lexeme｜rmac｜sn〕'].apply(SelectCodeFromCell)
+    input['code'] = CodeColumn
     return input
+
+def SelectCodeFromCell(input):
+    list = input.replace("〕", "").replace("〔", "").split("｜")
+    return list[4]
 
 def SelectLexemeFromCell(input):
     list = input.replace("〕", "").replace("〔", "").split("｜")
