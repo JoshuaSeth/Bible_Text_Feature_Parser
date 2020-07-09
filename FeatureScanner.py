@@ -11,7 +11,7 @@ def GetFeaturesForPassage(passage, onlyCountWords, GJohnVerseAndLexeme, useLexem
         print("Error, a NAN found, skipping this sequence")
         return None
 
-    parsedSequence = pp.DivisionToBCVString(passage)
+    parsedSequence = pp.DivisionToBCVStringList(passage)
 
     if parsedSequence == "":
         print("Warning, an empty sequence returned from parser, skipping this sequence")
@@ -126,4 +126,4 @@ def ReadFeaturesForColumn(verseDivisionList, datasForPassages, OnlyWordCount, GJ
                             datasForPassages[ratioKey].append(dataPointVal / wordCount)
                         else:
                             datasForPassages[ratioKey].append(0)
-        print(datasForPassages)
+        print(data)

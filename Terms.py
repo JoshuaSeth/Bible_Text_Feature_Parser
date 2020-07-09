@@ -53,5 +53,3 @@ otherList = ['αὐτού', 'αὐτὀς', 'αὐτῷ', 'εἰ', 'εἰ μὴ'
 # Proskunein = προσκυνέω
 # Terein = τηρέω
 # Udoor = ὕδωρ = ὕδατος
-
-print(len(OGNToWords))
