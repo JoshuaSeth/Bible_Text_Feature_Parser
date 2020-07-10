@@ -5,7 +5,7 @@ compoundHashes = set()
 
 def CreateCompoundList(bibleDF):
     print("Start creation of compound list")
-    with open("Compound words 2.txt", "w") as textFile:
+    with open("Compound words.txt", "w") as textFile:
         textFile.write("Compound words: " + "\n")
     textFile.close()
 
@@ -39,16 +39,17 @@ def CreateCompoundList(bibleDF):
                                         print(possibleCompound + " row " + str(count) + " of " + str(bibleDF.shape[0]))
 
         if count%20 == 0:
-            with open("Compound words 2.txt", "a") as textFile:
+            with open("Compound words.txt", "a") as textFile:
                 textFile.write(currentString)
                 currentString=""
             textFile.close()
 
 
-with open("Compound words 2.txt", "r") as textFile:
+with open("Compound words.txt", "r") as textFile:
     string = textFile.read()
     compoundList = string.split("\n")
 
 # import BibleToDF as btf
 # bibleData = btf.GetALLNTLexemes()
 # CreateCompoundList(bibleData)
+

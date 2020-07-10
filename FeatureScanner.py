@@ -6,6 +6,8 @@ import Terms as t
 import CompoundWords as cw
 import Morphology as m
 
+alreadyFoundCompouns = set()
+
 def GetFeaturesForPassage(passage, onlyCountWords, GJohnVerseAndLexeme, useLexemesForPTTerms=False, NT=None, excludeForHLCount=None):
     #Check if it is a valid sequence
     print("Sequence: " + str(passage))
@@ -60,9 +62,13 @@ def GetFeaturesForPassage(passage, onlyCountWords, GJohnVerseAndLexeme, useLexem
         featureCount["Hapaxes in NT Lemma"] = []
         featureCount["Hapaxes in NT OGNT"] = []
     featureCount["Compound Words"] = 0
+    featureCount["Unique compound Words"] = 0
     featureCount["Foreign Words"] = 0
     featureCount["Historical Present"] = 0
     featureCount["Relative Pronouns"] = 0
+    featureCount["Correlative Pronouns"] = 0
+    featureCount["Of which doubtful:"] = 0
+    featureCount["Relative and Correlative Pronouns"] = 0
 
     sequenceTotalWords = 0
 
@@ -118,6 +124,10 @@ def GetFeaturesForPassage(passage, onlyCountWords, GJohnVerseAndLexeme, useLexem
                 if cw.compoundList.__contains__(lexeme):
                     featureCount['Compound Words']+=1
                     print(lexeme + " is a compound")
+                    if not alreadyFoundCompouns.__contains__(lexeme):
+                        featureCount["Unique compound Words"] +=1
+                        alreadyFoundCompouns.add(lexeme)
+
                 if Strongs.foreignWords.__contains__(lexeme):
                     if(not lexeme.__contains__('Ἰησοῦς')):
                         featureCount['Foreign Words']+=1
@@ -140,15 +150,23 @@ def GetFeaturesForPassage(passage, onlyCountWords, GJohnVerseAndLexeme, useLexem
                 if t.relativePronounForms.__contains__(OGNToWord):
                     Gcode = wordRow[6]
                     if not m.dictionary[Gcode].__contains__("pronoun"):
-                        if not m.dictionary[Gcode].__contains__("Relative") and not m.dictionary[Gcode].__contains__("Correlative"):
+                        if not m.dictionary[Gcode].__contains__("Relative") and not m.dictionary[Gcode].__contains__("correlative"):
                             errorData["Refused pronouns"].append(OGNToWord)
                             errorData["GCodes of refused"].append(Gcode)
 
                 if m.dictionary[wordRow[6]].__contains__("pronoun"):
-                    if m.dictionary[wordRow[6]].__contains__("Relative") or m.dictionary[wordRow[6]].__contains__("Correlative"):
+                    if m.dictionary[wordRow[6]].__contains__("Relative"):
                         featureCount["Relative Pronouns"] += 1
+                        featureCount["Relative and Correlative Pronouns"]+=1
+                    if m.dictionary[wordRow[6]].__contains__("correlative"):
+                        featureCount["Correlative Pronouns"] += 1
+                        if(m.dictionary[wordRow[6]].__contains__("or")):
+                            featureCount["Of which doubtful:"] += 1
+                        featureCount["Relative and Correlative Pronouns"]+=1
+
                         if not t.relativePronounForms.__contains__(OGNToWord):
                             errorData["Unrecognized relative forms"].append(OGNToWord)
+
 
     metadata = {}
     metadata['Passage'] = passage
