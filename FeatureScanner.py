@@ -4,6 +4,7 @@ import MarkupReader as mur
 import Strongs
 import Terms as t
 import CompoundWords as cw
+import Morphology as m
 
 def GetFeaturesForPassage(passage, onlyCountWords, GJohnVerseAndLexeme, useLexemesForPTTerms=False, NT=None, excludeForHLCount=None):
     #Check if it is a valid sequence
@@ -47,6 +48,7 @@ def GetFeaturesForPassage(passage, onlyCountWords, GJohnVerseAndLexeme, useLexem
         for term in t.deounlist:
             deounCount[term] = 0
 
+
     featureCount = {}
     featureCount["Hapax Legomena Lemma"] = 0
     featureCount['Hapax Legomena OGNTo Word'] = 0
@@ -60,9 +62,14 @@ def GetFeaturesForPassage(passage, onlyCountWords, GJohnVerseAndLexeme, useLexem
     featureCount["Compound Words"] = 0
     featureCount["Foreign Words"] = 0
     featureCount["Historical Present"] = 0
+    featureCount["Relative Pronouns"] = 0
 
     sequenceTotalWords = 0
 
+    errorData = {}
+    errorData["Refused pronouns"]=[]
+    errorData["GCodes of refused"]=[]
+    errorData["Unrecognized relative forms"]=[]
 
 
     for verseTag in parsedSequence:
@@ -130,17 +137,30 @@ def GetFeaturesForPassage(passage, onlyCountWords, GJohnVerseAndLexeme, useLexem
                 if deounCount.__contains__(lexeme):
                     deounCount[lexeme]+=1
 
+                if t.relativePronounForms.__contains__(OGNToWord):
+                    Gcode = wordRow[6]
+                    if not m.dictionary[Gcode].__contains__("pronoun"):
+                        if not m.dictionary[Gcode].__contains__("Relative") and not m.dictionary[Gcode].__contains__("Correlative"):
+                            errorData["Refused pronouns"].append(OGNToWord)
+                            errorData["GCodes of refused"].append(Gcode)
+
+                if m.dictionary[wordRow[6]].__contains__("pronoun"):
+                    if m.dictionary[wordRow[6]].__contains__("Relative") or m.dictionary[wordRow[6]].__contains__("Correlative"):
+                        featureCount["Relative Pronouns"] += 1
+                        if not t.relativePronounForms.__contains__(OGNToWord):
+                            errorData["Unrecognized relative forms"].append(OGNToWord)
+
     metadata = {}
     metadata['Passage'] = passage
     metadata['Word Count'] = sequenceTotalWords
 
 
-    return [metadata, featureCount, deounCount ,prpCount, ptCount]
+    return [metadata, featureCount, deounCount ,prpCount, ptCount, errorData]
 
 
 
 
-def ReadFeaturesForColumn(verseDivisionList, datasForPassages, OnlyWordCount, GJohnVerseAndLexeme, UseLexemesForPTCount=False, NT=None, excludeForHLCount=None):
+def ReadFeaturesForColumn(verseDivisionList, datasForPassages, OnlyWordCount, GJohnVerseAndLexeme, UseLexemesForPTCount=False, NT=None, excludeForHLCount=None, calculateRatios=False):
     for sequence in verseDivisionList:
         data = GetFeaturesForPassage(sequence, onlyCountWords=OnlyWordCount, GJohnVerseAndLexeme=GJohnVerseAndLexeme, useLexemesForPTTerms=UseLexemesForPTCount, NT=NT, excludeForHLCount=excludeForHLCount)
         if data is not None:
@@ -151,17 +171,19 @@ def ReadFeaturesForColumn(verseDivisionList, datasForPassages, OnlyWordCount, GJ
                 dictInd += 1
                 for dataPointKey, dataPointVal in dictionary.items():
                     newKey = str(dictInd) + ": " + str(dataPointKey)
-                    ratioKey = str(dictInd) + ": " + str(dataPointKey) + " ratio"
+                    if calculateRatios:
+                        ratioKey = str(dictInd) + ": " + str(dataPointKey) + " ratio"
                     if not datasForPassages.__contains__(newKey):
                         datasForPassages[newKey] = []
                     datasForPassages[newKey].append(dataPointVal)
 
                     # Ratio's
-                    if isinstance(dataPointVal, int):
-                        if not datasForPassages.__contains__(ratioKey):
-                            datasForPassages[ratioKey] = []
-                        if dataPointVal != 0 and wordCount != 0:
-                            datasForPassages[ratioKey].append(dataPointVal / wordCount)
-                        else:
-                            datasForPassages[ratioKey].append(0)
+                    if calculateRatios:
+                        if isinstance(dataPointVal, int):
+                            if not datasForPassages.__contains__(ratioKey):
+                                datasForPassages[ratioKey] = []
+                            if dataPointVal != 0 and wordCount != 0:
+                                datasForPassages[ratioKey].append(dataPointVal / wordCount)
+                            else:
+                                datasForPassages[ratioKey].append(0)
         print(data)

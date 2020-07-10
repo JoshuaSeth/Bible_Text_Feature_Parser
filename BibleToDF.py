@@ -8,6 +8,8 @@ def AddLexemeAndWordColumn(input):
     input['ognto'] = OGNToColumn
     CodeColumn = input['〔OGNTk｜OGNTu｜OGNTa｜lexeme｜rmac｜sn〕'].apply(SelectCodeFromCell)
     input['code'] = CodeColumn
+    KeyColumn = input['〔OGNTk｜OGNTu｜OGNTa｜lexeme｜rmac｜sn〕'].apply(SelectKeyFromCell)
+    input['morphKey'] = KeyColumn
     return input
 
 def SelectCodeFromCell(input):
@@ -17,6 +19,10 @@ def SelectCodeFromCell(input):
 def SelectLexemeFromCell(input):
     list = input.replace("〕", "").replace("〔", "").split("｜")
     return list[3]
+
+def SelectKeyFromCell(input):
+    list = input.replace("〕", "").replace("〔", "").split("｜")
+    return list[5]
 
 def SelectOGNToFromCell(input):
     list = input.replace("〕", "").replace("〔", "").split("｜")
