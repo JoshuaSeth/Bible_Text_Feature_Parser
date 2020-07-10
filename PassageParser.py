@@ -24,7 +24,7 @@ def DivisionToBCVStringList(division):
 
     if not division.__contains__(":" or ","):
         warnings.warn("WARNING, this division is incorrectly denoted and will be skipped: " +str(division))
-        return ""
+        return""
 
     #Some preprocessing
     division = str(division)
