@@ -45,7 +45,7 @@ def CreateCompoundList(bibleDF):
             textFile.close()
 
 
-with open("Compound words.txt", "r") as textFile:
+with open("Compound words in John.txt", "r") as textFile:
     string = textFile.read()
     compoundList = string.split("\n")
 

@@ -4,7 +4,7 @@ root = ET.parse('strongsgreek.xml').getroot()
 
 
 compoundWords= []
-foreignWords = []
+foreignWordsCodes = {}
 names = []
 
 with open('female-names.json') as json_file:
@@ -20,8 +20,9 @@ with open('male_names.json') as json_file:
 def AddToForeignList():
     if not(names.__contains__(type_tag.find('kjv_def').text.replace("-", "").replace(":", "").replace(" ", "").replace(".", ""))):
         strongsWord = type_tag.find('greek').get('unicode')
-        foreignWords.append(strongsWord)
-        print(strongsWord + " " + deriv.text)
+        strongsCode = type_tag.find('strongs').text
+        foreignWordsCodes[strongsCode] = strongsWord
+        print(strongsWord + " " + deriv.text + str(strongsCode))
 
 
 for type_tag in root.findall('entries/'):
@@ -32,13 +33,13 @@ for type_tag in root.findall('entries/'):
             compoundWords.append(strongsWord)
 
 
-        if deriv.text.__contains__("foreign origin"):
+        if deriv.text.__contains__("foreign"):
             AddToForeignList()
-        if deriv.text.__contains__("Hebrew origin"):
+        if deriv.text.__contains__("Hebrew"):
             AddToForeignList()
-        if deriv.text.__contains__("Chaldee origin"):
+        if deriv.text.__contains__("Chaldee"):
             AddToForeignList()
-        if deriv.text.__contains__("Latin origin"):
+        if deriv.text.__contains__("Latin"):
             AddToForeignList()
         # if deriv.text.__contains__("uncertain origin"):
         #     AddToForeignList()

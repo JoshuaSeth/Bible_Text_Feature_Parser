@@ -64,6 +64,7 @@ def GetFeaturesForPassage(passage, onlyCountWords, GJohnVerseAndLexeme, useLexem
     featureCount["Compound Words"] = 0
     featureCount["Unique compound Words"] = 0
     featureCount["Foreign Words"] = 0
+    featureCount["Foreign Words Found"] = []
     featureCount["Historical Present"] = 0
     featureCount["Relative Pronouns"] = 0
     featureCount["Correlative Pronouns"] = 0
@@ -128,10 +129,11 @@ def GetFeaturesForPassage(passage, onlyCountWords, GJohnVerseAndLexeme, useLexem
                         featureCount["Unique compound Words"] +=1
                         alreadyFoundCompouns.add(lexeme)
 
-                if Strongs.foreignWords.__contains__(lexeme):
+                if Strongs.foreignWordsCodes.__contains__(wordRow[6].replace("G", "")):
                     if(not lexeme.__contains__('Ἰησοῦς')):
                         featureCount['Foreign Words']+=1
-                        print(lexeme + " is a foreign word")
+                        featureCount["Foreign Words Found"].append(lexeme)
+                        print(lexeme + " is a foreign word. is " + Strongs.foreignWordsCodes[wordRow[6].replace("G", "")])
 
                 if useLexemesForPTTerms:
                     if ptCount.__contains__(lexeme):

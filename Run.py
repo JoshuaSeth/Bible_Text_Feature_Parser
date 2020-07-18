@@ -5,19 +5,18 @@ import pickle
 import BibleToDF as btf
 
 pericope = btf.GetLexemesForDivision("7:53-53&8:1-11")
-GJohnVerseAndLexeme =  btf.GetLexemesForBibleBook(40)
+GJohnVerseAndLexeme =  btf.GetLexemesForBibleBook(43)
 NewTestament = btf.GetALLNTLexemes()
-
 
 
 import FeatureScanner as fp
 
 
-excelWithSequences = pd.read_excel('ExcelForOtherGospels.xlsx')
-verseDivisionList = excelWithSequences["Matthew"]
+excelWithSequences = pd.read_excel('Nieuwe indeling Outlier test.xlsx')
+verseDivisionList = excelWithSequences["Corrected"]
 
 datasForPassages = {}
-fp.ReadFeaturesForColumn(verseDivisionList, datasForPassages, False,GJohnVerseAndLexeme, True, None, pericope)
+fp.ReadFeaturesForColumn(verseDivisionList, datasForPassages, False, GJohnVerseAndLexeme, True, NewTestament, pericope)
 
 with open('dictionaryData.pickle', 'wb') as f:
     pickle.dump(datasForPassages, f)

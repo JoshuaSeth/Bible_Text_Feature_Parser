@@ -50,6 +50,9 @@ def Test(nr):
     return prefixCount
 
 def Test2(nr):
+    with open("Compound words in John.txt", "w") as textFile:
+        textFile.write("Compound words: " + "\n")
+    textFile.close()
     import CompoundWords as cw
     alreadyFound = []
     prefixCount = 0
@@ -62,6 +65,10 @@ def Test2(nr):
             if not alreadyFound.__contains__(word):
                 prefixCount += 1
                 alreadyFound.append(word)
+                with open("Compound words in John.txt", "a") as textFile:
+                    textFile.write(word + "\n")
+                    currentString = ""
+                textFile.close()
     return prefixCount
 
 print(Test2(43))
