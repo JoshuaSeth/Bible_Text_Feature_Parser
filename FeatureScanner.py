@@ -37,6 +37,13 @@ def GetFeaturesForPassage(passage, onlyCountWords, GJohnVerseAndLexeme, useLexem
             for term in t.OGNToWords:
                 ptCount[term] = 0
 
+    ptLukeCount = {}
+    if (not onlyCountWords):
+        ptLukeCount["Total"] =0
+        if useLexemesForPTTerms:
+            for term in t.lukanPreferenceTerms:
+                ptLukeCount[term] = 0
+
     #Prepositions
     prpCount = {}
     if (not onlyCountWords):
@@ -135,6 +142,10 @@ def GetFeaturesForPassage(passage, onlyCountWords, GJohnVerseAndLexeme, useLexem
                         featureCount["Foreign Words Found"].append(lexeme)
                         print(lexeme + " is a foreign word. is " + Strongs.foreignWordsCodes[wordRow[6].replace("G", "")])
 
+                if ptLukeCount.__contains__(lexeme):
+                    ptLukeCount[lexeme] += 1
+                    ptLukeCount["Total"] += 1
+
                 if useLexemesForPTTerms:
                     if ptCount.__contains__(lexeme):
                         ptCount[lexeme]+=1
@@ -175,7 +186,7 @@ def GetFeaturesForPassage(passage, onlyCountWords, GJohnVerseAndLexeme, useLexem
     metadata['Word Count'] = sequenceTotalWords
 
 
-    return [metadata, featureCount, deounCount ,prpCount, ptCount, errorData]
+    return [metadata, featureCount, deounCount ,prpCount, ptCount, ptLukeCount, errorData]
 
 
 

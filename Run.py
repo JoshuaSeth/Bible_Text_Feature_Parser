@@ -16,7 +16,7 @@ excelWithSequences = pd.read_excel('Nieuwe indeling Outlier test.xlsx')
 verseDivisionList = excelWithSequences["Corrected"]
 
 datasForPassages = {}
-fp.ReadFeaturesForColumn(verseDivisionList, datasForPassages, False, GJohnVerseAndLexeme, True, NewTestament, pericope)
+fp.ReadFeaturesForColumn(verseDivisionList, datasForPassages, False, GJohnVerseAndLexeme, True, None, pericope)
 
 with open('dictionaryData.pickle', 'wb') as f:
     pickle.dump(datasForPassages, f)
@@ -26,7 +26,7 @@ for k, v in datasForPassages.items():
 
 df = pd.DataFrame.from_dict(datasForPassages)
 print(df)
-df.to_excel('results.xlsx')
+df.to_excel('resultsWithLuke.xlsx')
 
 
 
