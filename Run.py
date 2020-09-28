@@ -27,7 +27,3 @@ for k, v in datasForPassages.items():
 df = pd.DataFrame.from_dict(datasForPassages)
 print(df)
 df.to_excel('resultsWithLuke.xlsx')
-
-
-
-#Testing of commits work again
