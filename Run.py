@@ -2,16 +2,14 @@
 
 from data_access import Bible as b
 
-# John = b.GetBookDF(42)
+John = b.GetBookDF(42)
 
-print(b.bible)
+print(John)
 
-# pericope = btf.GetLexemesForDivision("7:53-53&8:1-11")
-# GJohnVerseAndLexeme = btf.GetLexemesForBibleBook(43)
-# NewTestament = btf.GetALLNTLexemes()
 
-# excelWithSequences = pd.read_excel('Nieuwe indeling Outlier test.xlsx')
-# verseDivisionList = excelWithSequences["Corrected"]
+
+excelWithSequences = pd.read_excel('Nieuwe indeling Outlier test.xlsx')
+verseDivisionList = excelWithSequences["Corrected"]
 
 # datasForPassages = {}
 # fp.ReadFeaturesForColumn(verseDivisionList, datasForPassages,

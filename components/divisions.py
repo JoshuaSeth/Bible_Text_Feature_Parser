@@ -1,0 +1,68 @@
+import book_names as bn
+import re
+
+class Verse:
+    def __init__(self, string):
+        #Get the name of the bible book
+        book_name = string.split(" ")[0]
+
+        #Get the number key for the name value
+        self.book = bn.GetBookNr(book_name)
+
+        #Chapter is the part before(:)
+        self.chapter = string.split(" ")[1].split(":")[0]
+
+        #Get the verse and verse part: 2b
+        verse_item = string.split(":")[1]
+
+        #Get the number part as the verse: 2
+        self.verse = re.sub("[^0-9]", "",verse_item)
+
+        #Get the non number part as the postfix : b
+        self.post_fix = ''.join(c for c in verse_item if not c.isdigit())
+    
+    #Return this verse as a formatted string
+    def GetString(self):
+        return bn.books[self.book] + " " + self.GetChapterVerse()
+    
+    #Returns only the chapter and verse
+    def GetChapterVerse(self):
+        return str(self.chapter) + ":" + str(self.verse) + str(self.post_fix)
+
+
+class Passage:
+    def __init__(self, string):
+        #Split the string in an start and end verse
+        split = string.split("-")
+        start_verse_str = split[0].lstrip().rstrip()
+        end_verse_str = split[1].lstrip().rstrip()
+
+        #Parse both verse strings to 
+        start_verse = Verse(start_verse_str)
+        end_verse = Verse(end_verse_str)
+
+        #Assign them to this passage
+        self.start = start_verse
+        self.end = end_verse
+    
+    #Return passage as a formatted string
+    def GetString(self):
+        #The start is always the start string
+        string = self.start.GetString()
+
+        #Add midpart
+        string+="-"
+
+        #If the bible books are different: John 1:1 - Acts 4:14
+        if self.start.book != self.end.book:
+            string+=self.end.GetString()
+        
+        #If only the chapter is different: John 1:1- 4:14
+        elif self.start.chapter != self.end.chapter:
+            string+=self.end.GetChapterVerse()
+
+        #If only the endverse is different John 1:1 - 10
+        else:
+            string+=self.end.verse+self.end.post_fix
+
+        return string

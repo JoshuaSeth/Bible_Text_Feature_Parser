@@ -79,13 +79,14 @@ def _LoadBible():
     #Get the lexeme 
     bible_data["Lexeme"] = word_column.apply(GetLexeme)
 
+    #Only save the relevant columns
     bible_data = bible_data[["Book", "Chapter", "Verse", "Greek Word", "Lexeme"]]
 
     return bible_data
 
 
 def GetBookDF(bible_book_nr):
-    return bible.loc[bible['Book'].isin([bible_book_nr])]
+    return bible.loc[bible['Book']==str(bible_book_nr)]
 
 def GetBible():
     return bible
