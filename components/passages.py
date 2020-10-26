@@ -1,6 +1,4 @@
-#This script handles the passages list
-#Input should either be the current list to save it, an excel doc, an textfile, try:
-#Output will always be a list [] with objects the progam can work with
+import pandas as pd
 
 from divisions import Passage, Verse
 
@@ -8,11 +6,16 @@ passages = []
 
 #Loads a list of passages and adds them to the current list
 def LoadPassageList(string):
+    #Check for file type and load as df
     if string.contains(".xlsx"):
-        print("opening excel")
+        pd.read_excel(string)
     if string.contains(".csv"):
-        print("opening csv")
-    return None
+        pd.read_csv(string)
+    #Could add many more filetypes here
+
+    #If there are multiple columns ask which column contains the divisions
+
+    #Add every division in the column to the passages list
 
 #Add a passage to the current passage list
 def AddPassage(string):

@@ -8,6 +8,10 @@ import Morphology as m
 
 alreadyFoundCompouns = set()
 
+def Scan(passage, plugins):
+    #This new method will let you select plugins and give these plugins as an argument to the scanner. They are then plugged in.
+    pass
+
 def GetFeaturesForPassage(passage, onlyCountWords, GJohnVerseAndLexeme, useLexemesForPTTerms=False, NT=None, excludeForHLCount=None):
     #Check if it is a valid sequence
     print("Sequence: " + str(passage))

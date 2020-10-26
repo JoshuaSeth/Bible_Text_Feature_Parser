@@ -8,9 +8,6 @@ print(John)
 
 
 
-excelWithSequences = pd.read_excel('Nieuwe indeling Outlier test.xlsx')
-verseDivisionList = excelWithSequences["Corrected"]
-
 # datasForPassages = {}
 # fp.ReadFeaturesForColumn(verseDivisionList, datasForPassages,
 #                          False, GJohnVerseAndLexeme, True, None, pericope)
