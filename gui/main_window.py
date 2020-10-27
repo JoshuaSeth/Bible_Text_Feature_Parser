@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from passages_pane import PassagePane
-
+from plugins_pane import PluginsPane
 
 # Subclass QMainWindow to customise your application's main window
 class MainWindow(QMainWindow):
@@ -13,7 +13,7 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("My Awesome App")
         
         #Central layout and widget
-        layout = QGridLayout()
+        layout = QHBoxLayout()
         widget = QWidget()
         widget.setLayout(layout)
         # Set the central widget of the Window. Widget will expand
@@ -21,8 +21,14 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(widget)
         
         #Add costum widgets
-        test = PassagePane()
-        layout.addWidget(test)
+        #Passage Pane
+        pp = PassagePane()
+        layout.addWidget(pp)
+
+        #Plugin Pane
+        plp = PluginsPane()
+        layout.addWidget(plp)
+
 
         
         

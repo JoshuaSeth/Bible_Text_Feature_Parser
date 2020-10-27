@@ -4,10 +4,7 @@ import re
 class Verse:
     def __init__(self, string, previous_verse=None):
         #Check the structure of the string
-        #spaces
         has_spaces = string.__contains__(" ")
-
-        #:
         has_separator = string.__contains__(":")
 
         #Book

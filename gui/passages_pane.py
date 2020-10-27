@@ -15,6 +15,9 @@ class PassagePane(QGroupBox):
         self.cur_layout = QVBoxLayout()
         self.setLayout(self.cur_layout)
 
+        #Make layout start at top instead of middle
+        self.cur_layout.setAlignment(Qt.AlignTop)
+
         #Render it a first time
         self.Render()
 
