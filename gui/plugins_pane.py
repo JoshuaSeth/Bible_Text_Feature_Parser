@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
+from input_list import InputList
 import os
 
 
@@ -53,11 +54,22 @@ class PluginUI(QGroupBox):
 
         index = 0
         for name, setting in plugin.settings.items():
+            #If the setting type is boolean make a checkbox
             if type(setting.value) is bool:
                 label = QLabel(name)
                 cb = QCheckBox()
                 grid.addWidget(label, index, 0)
                 grid.addWidget(cb, index, 1)
+
+            #If the setting type is list make na input list
+            if type(setting.value) is list:
+                space = QLabel("")
+                label = QLabel(name)
+                layout.addWidget(space)
+                layout.addWidget(label)
+                label.setFont(QFont('Arial', 16))
+                input_list = InputList()
+                layout.addWidget(input_list)
             index+=1
 
 
