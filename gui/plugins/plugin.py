@@ -12,6 +12,6 @@ class Plugin:
         self.state = {}
 
 class Setting:
-    def __init__(self, value, tooltip,):
+    def __init__(self, value, tooltip):
         self.tooltip = tooltip
         self.value = value

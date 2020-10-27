@@ -2,10 +2,10 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
-class InputList(QGroupBox):
+class DropDownList(QGroupBox):
     def __init__(self, input_list=None):
         #Initialize element
-        super(InputList, self).__init__()
+        super(DropDownList, self).__init__()
 
         #Give this widget a layout
         self.cur_layout = QGridLayout()
@@ -53,3 +53,19 @@ class InputList(QGroupBox):
 
         #Traack entries to place new line at
         self.entries+=1
+
+class CheckableComboBox(QComboBox):
+    def __init__(self, options):
+        super(CheckableComboBox, self).__init__()
+        self.view().pressed.connect(self.handleItemPressed)
+        self.setModel(QStandardItemModel(self))
+
+        for option in options:
+            self.addItem(option)
+
+    def handleItemPressed(self, index):
+        item = self.model().itemFromIndex(index)
+        if item.checkState() == Qt.Checked:
+            item.setCheckState(Qt.Unchecked)
+        else:
+            item.setCheckState(Qt.Checked)

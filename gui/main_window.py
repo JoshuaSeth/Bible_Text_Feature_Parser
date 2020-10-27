@@ -3,6 +3,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from passages_pane import PassagePane
 from plugins_pane import PluginsPane
+from run_pane import RunPane
 
 # Subclass QMainWindow to customise your application's main window
 class MainWindow(QMainWindow):
@@ -28,7 +29,10 @@ class MainWindow(QMainWindow):
         #Plugin Pane
         plp = PluginsPane()
         layout.addWidget(plp)
-
+        
+        #Run program Pane
+        rpp = RunPane()
+        layout.addWidget(rpp)
 
         
         

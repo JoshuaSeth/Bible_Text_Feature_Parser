@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from input_list import InputList
+from check_combo_box import CheckableComboBox
 import os
 
 
@@ -58,17 +59,36 @@ class PluginUI(QGroupBox):
             if type(setting.value) is bool:
                 label = QLabel(name)
                 cb = QCheckBox()
+                label.setToolTip(setting.tooltip)
                 grid.addWidget(label, index, 0)
                 grid.addWidget(cb, index, 1)
+
+            if type(setting.value) is str:
+                label = QLabel(name)
+                inp = QLineEdit()
+                label.setToolTip(setting.tooltip)
+                grid.addWidget(label, index, 0)
+                grid.addWidget(inp, index, 1)
+            
+            if type(setting.value) is set:
+                label = QLabel(name)
+                cbb = CheckableComboBox(setting.value)
+                label.setToolTip(setting.tooltip)
+                grid.addWidget(label, index, 0)
+                grid.addWidget(cbb, index, 1)
 
             #If the setting type is list make na input list
             if type(setting.value) is list:
                 space = QLabel("")
                 label = QLabel(name)
+                label.setToolTip(setting.tooltip)
                 layout.addWidget(space)
                 layout.addWidget(label)
                 label.setFont(QFont('Arial', 16))
-                input_list = InputList()
+                if len(setting.value)==0:
+                    input_list = InputList()
+                else:
+                    input_list = InputList(setting.value)
                 layout.addWidget(input_list)
             index+=1
 

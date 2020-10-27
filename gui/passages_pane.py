@@ -15,6 +15,18 @@ class PassagePane(QGroupBox):
         self.cur_layout = QVBoxLayout()
         self.setLayout(self.cur_layout)
 
+        #The passages title
+        label = QLabel("Passages")
+        label.setFont(QFont('Arial', 28))
+        qbox = QVBoxLayout()
+        qbox.setAlignment(Qt.AlignCenter)
+        qbox.addWidget(label)
+        self.cur_layout.addLayout(qbox)
+
+        self.passages_box=QVBoxLayout()
+        self.cur_layout.addLayout(self.passages_box)
+   
+
         #Make layout start at top instead of middle
         self.cur_layout.setAlignment(Qt.AlignTop)
 
@@ -27,16 +39,16 @@ class PassagePane(QGroupBox):
     #Rerenders the contents based on the current passages in the list
     def Render(self, args=[]):
         # Empty the layout
-        for i in reversed(range(self.cur_layout.count())): 
-            self.cur_layout.itemAt(i).widget().deleteLater()
+        for i in reversed(range(self.passages_box.count())): 
+            self.passages_box.itemAt(i).widget().deleteLater()
 
         #Give the layouts items
         for passage in self.passages.passages:
             name = passage.GetString()
-            self.cur_layout.addWidget(PassageUI(name))
+            self.passages_box.addWidget(PassageUI(name))
         
         #Add the bottom a text field and button to add passages
-        self.cur_layout.addWidget(AddPassageBtn(self))
+        self.passages_box.addWidget(AddPassageBtn(self))
 
 
 #A button that allows you to write a passage and add it
