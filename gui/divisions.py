@@ -2,18 +2,45 @@ import book_names as bn
 import re
 
 class Verse:
-    def __init__(self, string):
-        #Get the name of the bible book
-        book_name = string.split(" ")[0]
+    def __init__(self, string, previous_verse=None):
+        #Check the structure of the string
+        #spaces
+        has_spaces = string.__contains__(" ")
 
+        #:
+        has_separator = string.__contains__(":")
+
+        #Book
+        #If no book name is given assume book name of previous verse
+        if not has_spaces:
+            self.book_name = previous_verse.book_name
+        #Else get the name of the bible book
+        else:
+            self.book_name = string.split(" ")[0]
+
+        #Book nr
         #Get the number key for the name value
-        self.book = bn.GetBookNr(book_name)
+        self.book = bn.GetBookNr(self.book_name)
 
+        #Chapter
+        if not has_spaces:
+            #If there is also no :
+            if not has_separator:
+                self.chapter = previous_verse.chapter
+            #If there is no space but is :
+            else:
+                self.chapter = string.split(":")[0]
         #Chapter is the part before(:)
-        self.chapter = string.split(" ")[1].split(":")[0]
+        else:
+            self.chapter = string.split(" ")[1].split(":")[0]
 
-        #Get the verse and verse part: 2b
-        verse_item = string.split(":")[1]
+        #Verse
+        #The string might be just the verse
+        if not has_separator:
+            verse_item = string
+        #If its more, then select the verse part
+        else:
+            verse_item = string.split(":")[1]
 
         #Get the number part as the verse: 2
         self.verse = re.sub("[^0-9]", "",verse_item)
@@ -39,7 +66,7 @@ class Passage:
 
         #Parse both verse strings to 
         start_verse = Verse(start_verse_str)
-        end_verse = Verse(end_verse_str)
+        end_verse = Verse(end_verse_str, start_verse)
 
         #Assign them to this passage
         self.start = start_verse
