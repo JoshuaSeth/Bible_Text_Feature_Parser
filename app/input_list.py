@@ -1,16 +1,34 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
+import save_load
 
 class InputList(QGroupBox):
     def __init__(self, input_list=None):
         #Initialize element
         super(InputList, self).__init__()
 
-        #Give this widget a layout
+        #Main layout
+        self.top_layout = QVBoxLayout()
+        self.setLayout(self.top_layout)
+        self.top_layout.setAlignment(Qt.AlignTop)
+
+
+        #An input list should always allow you to save or load it's contents as a preset
+        box = QHBoxLayout()
+        self.load_btn = QPushButton("Load")
+        self.load_btn.clicked.connect(self.OpenListPreset)
+        box.addWidget(self.load_btn)
+        self.save_btn = QPushButton("Save")
+        box.addWidget(self.save_btn)
+        self.top_layout.addLayout(box)
+
+        #Input fields layout
         self.cur_layout = QGridLayout()
-        self.setLayout(self.cur_layout)
+        self.top_layout.addLayout(self.cur_layout)
         self.cur_layout.setAlignment(Qt.AlignTop)
+
+        
 
         #Keep track of input lines
         self.edits = []
@@ -22,10 +40,13 @@ class InputList(QGroupBox):
         if input_list != None:
             for item in input_list:
                 self.AddLineEdit(string=item)
-                self.entries+=1
         #If we did not get a predefined list
         else:
             self.AddLineEdit()
+    
+    def OpenListPreset(self):
+        input_list = save_load.OpenFile()
+        self.SetList(input_list)
 
     def AddLineEdit(self, string=""):
         #Start a new column at 10 lines
@@ -35,6 +56,7 @@ class InputList(QGroupBox):
 
         #Add an input field and save its state
         edit = QLineEdit()
+        edit.setMinimumWidth(60)
 
         #Add initial vaule
         if string != "":
@@ -48,8 +70,21 @@ class InputList(QGroupBox):
         self.edits.append(edit)
 
         #Add a remove button
-        btn = QPushButton()
+        btn = QPushButton("x")
+        btn.setFixedWidth(30)
         self.cur_layout.addWidget(btn, self.entries, self.column_num+1)
 
         #Traack entries to place new line at
         self.entries+=1
+
+    def SetList(self, input_list):
+        #First remove all current LineEdits
+        for i in reversed(range(self.cur_layout.count())): 
+            self.cur_layout.itemAt(i).widget().deleteLater()
+
+        #Start at the first entry
+        self.entries=0
+
+        #Then
+        for item in input_list:
+            self.AddLineEdit(string=item.replace("\n", ""))

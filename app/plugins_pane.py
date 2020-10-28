@@ -63,6 +63,7 @@ class PluginUI(QGroupBox):
                 grid.addWidget(label, index, 0)
                 grid.addWidget(cb, index, 1)
 
+            #If it is a string make an input field
             if type(setting.value) is str:
                 label = QLabel(name)
                 inp = QLineEdit()
@@ -70,6 +71,7 @@ class PluginUI(QGroupBox):
                 grid.addWidget(label, index, 0)
                 grid.addWidget(inp, index, 1)
             
+            #If it is a set make a dropdown
             if type(setting.value) is set:
                 label = QLabel(name)
                 cbb = CheckableComboBox(setting.value)

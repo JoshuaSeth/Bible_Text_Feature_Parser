@@ -49,6 +49,8 @@ relativePronounForms = ['ὅς', 'οὗ', 'ᾧ', 'ὅν', 'οἵ', 'ὧν', 'ο�
 
 relativePronouns =['ἅ', 'αἵτινες', 'ἥτις', 'ἥ']
 
+
+
 #γεννᾶν is not found anywhere in NT probasbly should be γεννηθῇ? Or another form of GEnnaoo? but Morgenthaler has the former
 #None of the syllables of γιδόναι can i find in GJhon Morgenthaler reports 76: γίνομαι?
 #ζετεῖν not found anywhere in gospel replaced with ζητέite
