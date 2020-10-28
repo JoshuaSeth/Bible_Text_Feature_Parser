@@ -88,3 +88,10 @@ class InputList(QGroupBox):
         #Then
         for item in input_list:
             self.AddLineEdit(string=item.replace("\n", ""))
+    
+    def GetContents(self):
+        # Fill a list with the text contents of the edit fields
+        l = []
+        for edit in self.edits:
+            l.append(edit.text())
+        return l

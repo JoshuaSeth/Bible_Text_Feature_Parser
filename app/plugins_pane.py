@@ -4,10 +4,29 @@ from PyQt5.QtGui import *
 from input_list import InputList
 from check_combo_box import CheckableComboBox
 import os
+import weakref
 
 
 class PluginsPane(QGroupBox):
+
+    #Register instance
+    _instances = set()
+
+    @classmethod
+    def getinstances(cls):
+        dead = set()
+        for ref in cls._instances:
+            obj = ref()
+            if obj is not None:
+                yield obj
+            else:
+                dead.add(ref)
+        cls._instances -= dead
+
     def __init__(self):
+        #Register this instance
+        self._instances.add(weakref.ref(self))
+
         #Initialize element
         super(PluginsPane, self).__init__()
 
@@ -25,11 +44,20 @@ class PluginsPane(QGroupBox):
         qbox.addWidget(label)
         self.cur_layout.addLayout(qbox)
 
+        #Load all the plugin classes
         import plugins.plugin_load as plugin_load
         plugins = plugin_load.LoadPlugins()
 
+        self.active_plugins = []
         for plugin in plugins:
-            self.cur_layout.addWidget(PluginUI(plugin()))
+            #Instantiate all the classes
+            instantiate = plugin()
+
+            #Keep track of them
+            self.active_plugins.append(instantiate)
+
+            #Give this instance to a pluginUI to create UI for it
+            self.cur_layout.addWidget(PluginUI(instantiate))
 
 
 #Display a plugin

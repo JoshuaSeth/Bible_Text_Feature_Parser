@@ -34,13 +34,6 @@ class MainWindow(QMainWindow):
         rpp = RunPane()
         layout.addWidget(rpp)
 
-        import bible
-        import divisions
-        passage = divisions.Passage("Mark 3:6 - John 5:4")
-        print(passage.GetString())
-        df = bible.GetPassage(passage)
-        print(df)
-
         
 
 # You need one (and only one) QApplication instance per application.
