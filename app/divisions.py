@@ -17,7 +17,7 @@ class Verse:
 
         #Book nr
         #Get the number key for the name value
-        self.book = bn.GetBookNr(self.book_name)
+        self.book = int(bn.GetBookNr(self.book_name))
 
         #Chapter
         if not has_spaces:
@@ -26,10 +26,10 @@ class Verse:
                 self.chapter = previous_verse.chapter
             #If there is no space but is :
             else:
-                self.chapter = string.split(":")[0]
+                self.chapter = int(string.split(":")[0])
         #Chapter is the part before(:)
         else:
-            self.chapter = string.split(" ")[1].split(":")[0]
+            self.chapter = int(string.split(" ")[1].split(":")[0])
 
         #Verse
         #The string might be just the verse
@@ -40,7 +40,7 @@ class Verse:
             verse_item = string.split(":")[1]
 
         #Get the number part as the verse: 2
-        self.verse = re.sub("[^0-9]", "",verse_item)
+        self.verse = int(re.sub("[^0-9]", "",verse_item))
 
         #Get the non number part as the postfix : b
         self.post_fix = ''.join(c for c in verse_item if not c.isdigit())
@@ -87,6 +87,6 @@ class Passage:
 
         #If only the endverse is different John 1:1 - 10
         else:
-            string+=self.end.verse+self.end.post_fix
+            string+=str(self.end.verse)+self.end.post_fix
 
         return string

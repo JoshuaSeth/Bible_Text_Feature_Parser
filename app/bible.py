@@ -1,5 +1,4 @@
 import pandas as pd
-from data_access import PassageParser as pps
 
 ########################################################################
 #PANDAS HELPER FUNCTIONS
@@ -20,7 +19,7 @@ def GetBook(input):
     split = GetBookChapterVerseSplit(input)
 
     #Returns book,
-    return split[0]
+    return int(split[0])
 
 #Get bible chapter ftom〔Book｜Chapter｜Verse〕
 def GetChapter(input):
@@ -28,7 +27,7 @@ def GetChapter(input):
     split = GetBookChapterVerseSplit(input)
 
     #Returns chapter
-    return split[1]
+    return int(split[1])
 
 #Get bible verse from 〔Book｜Chapter｜Verse〕
 def GetVerse(input):
@@ -36,7 +35,7 @@ def GetVerse(input):
     split = GetBookChapterVerseSplit(input)
 
     #Returns verse
-    return split[2]
+    return int(split[2])
 
 def GetBookChapterVerseSplit(input):
     #Remove brackers
@@ -86,7 +85,73 @@ def _LoadBible():
 
 
 def GetBookDF(bible_book_nr):
-    return bible.loc[bible['Book']==str(bible_book_nr)]
+    return bible.loc[bible['Book']== bible_book_nr]
+
+def GetBibleVerse(verse):
+    book = bible.loc[bible['Book'] == verse.book]
+    chapter = book.loc[book['Chapter'] == verse.chapter]
+    verse = chapter.loc[chapter['Verse'] == verse.verse]
+    return verse
+
+def GetPassage(passage):
+    #EXAMPLE: JOHN 3:6 - ROMANS 5:4
+
+    #All the books this is in
+    #JOHN - ACTS - ROMANS
+    books = bible.loc[bible['Book'].between(passage.start.book, passage.end.book)]
+
+    #First book
+    #JOHN
+    first_book = books.loc[books['Book'] == passage.start.book]
+
+    #Last book
+    #ROMANS
+    last_book = books.loc[books['Book'] == passage.end.book]
+
+    #books between
+    #ACTS
+    books_between = books.loc[books['Book'].between(passage.start.book, passage.end.book, inclusive=False)]
+
+    #Get the last chapters of the first book
+    #JOHN 4 - 21
+    first_book_chapters = first_book.loc[first_book['Chapter'].between(passage.start.chapter, 999, inclusive=False)]
+
+    #Get the first chaptes of the last book
+    #ROMANS 1 - 4
+    last_book_chapters = last_book.loc[last_book['Chapter'].between(-1, passage.end.chapter, inclusive=False)]
+    
+    #Get all the chapters in tbween this
+    #ACTS
+    between_chapters = books_between
+
+    #Get the first chapter of the first book
+    #JOHN 3
+    first_book_first_chapter = first_book.loc[first_book["Chapter"] == passage.start.chapter]
+
+    #Get the last verses of this chapter
+    #JOHN 3:5-21
+    first_b_c_verses = first_book_first_chapter.loc[first_book_first_chapter["Verse"].between(passage.start.verse, 999)]
+
+    #Get the last chapter of the last book
+    #ROMANS 5
+    last_book_last_chapter = last_book.loc[last_book["Chapter"] == passage.end.chapter]
+
+    #Get the first verses of this chapter
+    #ROMANS 5:1-4
+    last_b_c_verses =  last_book_last_chapter.loc[last_book_last_chapter["Verse"].between(0, passage.end.verse)]
+
+    #Now concantenate them to the relevant passage
+    #JOHN 3:5-21 + JOHN 4-21 + ACTS + ROMANS 1-4 + ROMANS 5:1-4
+    frames = [first_b_c_verses, first_book_chapters, between_chapters, last_book_chapters, last_b_c_verses]
+
+    return pd.concat(frames)
+
+
+
+
+    
+    verses
+
 
 def GetBible():
     return bible
