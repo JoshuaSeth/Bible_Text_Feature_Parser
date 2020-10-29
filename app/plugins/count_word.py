@@ -46,7 +46,7 @@ class CountWord(Plugin):
             self.state["Verses and words"] = [" "] * len(passages_df_list)
 
         #Determine if we search for words or lemma's
-        col_name = "Greek Word"
+        col_name = "Greek_Word"
         if self.settings["Count Lexemes"].value == True:
             col_name = "Lexeme"
 

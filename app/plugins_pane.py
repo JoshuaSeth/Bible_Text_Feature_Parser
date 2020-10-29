@@ -87,6 +87,18 @@ class PluginUI(QGroupBox):
 
         index = 0
         for name, setting in plugin.settings.items():
+            #If it is an int make a spinbox
+            if type(setting.value) is int:
+                label = QLabel(name)
+                cb = QSpinBox()
+                cb.setValue(setting.value)
+                print("creating spinbox", setting, setting.value)
+                setting.ui = cb
+                cb.valueChanged.connect(setting.OnIntChanged)
+                label.setToolTip(setting.tooltip)
+                grid.addWidget(label, index, 0)
+                grid.addWidget(cb, index, 1)
+
             #If the setting type is boolean make a checkbox
             if type(setting.value) is bool:
                 label = QLabel(name)

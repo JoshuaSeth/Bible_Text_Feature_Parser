@@ -25,3 +25,7 @@ class Setting:
     def Tick(self):
         self.value = not self.value
         print(self.value)
+
+    def OnIntChanged(self):
+        print(self, self.value)
+        self.value = self.ui.value()

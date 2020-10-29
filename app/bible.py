@@ -73,13 +73,13 @@ def _LoadBible():
     word_column = bible_data['〔OGNTk｜OGNTu｜OGNTa｜lexeme｜rmac｜sn〕']
 
     #Get the greek word
-    bible_data["Greek Word"] = word_column.apply(GetGreekWord)
+    bible_data["Greek_Word"] = word_column.apply(GetGreekWord)
 
     #Get the lexeme 
     bible_data["Lexeme"] = word_column.apply(GetLexeme)
 
     #Only save the relevant columns
-    bible_data = bible_data[["Book", "Chapter", "Verse", "Greek Word", "Lexeme"]]
+    bible_data = bible_data[["Book", "Chapter", "Verse", "Greek_Word", "Lexeme"]]
 
     return bible_data
 
@@ -94,6 +94,7 @@ def GetBibleVerse(verse):
     return verse
 
 def GetPassage(passage):
+
     #EXAMPLE: JOHN 3:6 - ROMANS 5:4
 
     #All the books this is in
