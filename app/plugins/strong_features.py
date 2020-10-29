@@ -22,7 +22,7 @@ class StrongsFeatures(Plugin):
         for word in self.settings[0].value:
             self.state[word] = 0
 
-    def Note(self, row):
+    def ScanPassages(self, row):
         print(self.name, "has noted ", row)
         # # Get the greek word
         # word = input["Greek Word"]

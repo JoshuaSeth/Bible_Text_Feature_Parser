@@ -15,24 +15,40 @@ class CountWord(Plugin):
 
         self.name = "Word counter"
 
-    # Is called when the scan starts
-    def OnStartScan(self):
         # Set up a state
+        #The state will save the results so for every item a column
         self.state = {}
 
+    def ScanPassages(self, passages_df_list):
         # Fill the state with relevant counters
-        for word in self.settings[0].value:
-            self.state[word] = 0
+        for word in self.settings["Search Terms: "].value:
+            self.state[word] = [0] * len(passages_df_list)
 
-    def Note(self, row):
-        print(self.name, "has noted ", row)
-        # # Get the greek word
-        # word = row["Greek Word"]
+        #Determine if we search for words or lemma's
+        col_name = "Greek Word"
+        if self.settings["Count Lexemes"].value == True:
+            print('counting lexeemes')
+            col_name = "Lexeme"
 
-        # # If we are coutning lexemes make it the lexeme
-        # if self.settings[1].value == True:
-        #     word = row["Lexeme"]
+        #For each search term
+        for word, list_val in self.state.items():
+            #Check in each passage df
+            index = 0
+            for df in passages_df_list:
+                #Count the amount of occurences of this word in the passage
+                num_word_in_col = df[df[col_name] == word].shape[0]
 
-        # # IF we are counting this word add to the counter
-        # if word in self.state:
-        #     self.state[word] += 1
+                print(num_word_in_col)
+
+                #Save this to the state at the passage index
+                self.state[word][index] = num_word_in_col 
+
+                index+=1
+
+        print(self.state)
+        
+
+        
+
+        
+    

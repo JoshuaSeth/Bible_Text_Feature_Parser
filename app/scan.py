@@ -11,10 +11,15 @@ def Scan():
     for pp in PluginsPane.getinstances():
         plugins_pane = pp
 
+    #Save a list of the df's of passages to send to the plugins
+    passages_dfs = []
     for passage in passage_pane.GetPassages():
         df = bible.GetPassage(passage)
-        for row in df.iterrows():
-            for plugin in plugins_pane.active_plugins:
-                plugin.Note(row)
+        passages_dfs.append(df)
 
+    #Then send the last of passage df's to every plugin
+    for plugin in plugins_pane.active_plugins:
+        plugin.ScanPassages(passages_dfs)
 
+    #By sending all passages instead of rows one can more easily debug per plugin
+    #I.e. a plugin will break when it is its turn instead of everytime it gets a row

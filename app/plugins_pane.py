@@ -57,7 +57,12 @@ class PluginsPane(QGroupBox):
             self.active_plugins.append(instantiate)
 
             #Give this instance to a pluginUI to create UI for it
-            self.cur_layout.addWidget(PluginUI(instantiate))
+            ui = PluginUI(instantiate)
+            self.cur_layout.addWidget(ui)
+
+            #Make the plugin aware of its ui
+            instantiate.ui = ui
+
 
 
 #Display a plugin
@@ -115,11 +120,13 @@ class PluginUI(QGroupBox):
                 layout.addWidget(space)
                 layout.addWidget(label)
                 label.setFont(QFont('Arial', 16))
+                #By hooking the setting to the input list the settings contents are updated whenever one of the input fields updates
                 if len(setting.value)==0:
-                    input_list = InputList()
+                    input_list = InputList(hooked_item=setting)
                 else:
-                    input_list = InputList(setting.value)
+                    input_list = InputList(setting.value, hooked_item=setting)
                 layout.addWidget(input_list)
+
             index+=1
 
 
