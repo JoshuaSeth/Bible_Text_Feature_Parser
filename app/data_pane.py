@@ -2,12 +2,9 @@ import weakref
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-from divisions import Passage
-from input_list import InputList
+from table import DataFrameModel
 
-passages = ["John 1:1 - 2:3"]
-
-class PassagePane(QGroupBox):
+class DataPane(QGroupBox):
 
     _instances = set()
 
@@ -27,41 +24,33 @@ class PassagePane(QGroupBox):
         self._instances.add(weakref.ref(self))
 
         #Initialize element
-        super(PassagePane, self).__init__()
+        super(DataPane, self).__init__()
 
         #Give this widget a layout
         self.cur_layout = QVBoxLayout()
         self.setLayout(self.cur_layout)
 
         #The passages title
-        label = QLabel("Passages")
+        label = QLabel("Data")
         label.setFont(QFont('Arial', 28))
         qbox = QVBoxLayout()
         qbox.setAlignment(Qt.AlignCenter)
         qbox.addWidget(label)
         self.cur_layout.addLayout(qbox)
 
-        self.passages_box=QVBoxLayout()
-        self.cur_layout.addLayout(self.passages_box)
+        self.data_box=QVBoxLayout()
+        self.cur_layout.addLayout(self.data_box)
    
 
         #Make layout start at top instead of middle
         self.cur_layout.setAlignment(Qt.AlignTop)
         
-        #Give the pane an input list for the passages
-        self.list = InputList(passages)
-        self.cur_layout.addWidget(self.list)
+        #Give the pane a table with the data
+        self.table_view = QTableView()
+        self.cur_layout.addWidget(self.table_view)
 
-    def GetPassages(self, as_string=False):
-        # Return a passage instance based on the input contents
-        l = []
-        for item in self.list.GetContents():
-            if not as_string:
-                l.append(Passage(item))
-            else:
-                l.append(Passage(item).GetString())
-        return l
+    def Display(self, df):
+        #Convert the dataframe to a PYQt table
+        model = DataFrameModel(df)
 
-
-
-
+        self.table_view.setModel(model)

@@ -4,6 +4,7 @@ from PyQt5.QtGui import *
 from passages_pane import PassagePane
 from plugins_pane import PluginsPane
 from run_pane import RunPane
+from data_pane import DataPane
 
 # Subclass QMainWindow to customise your application's main window
 class MainWindow(QMainWindow):
@@ -34,6 +35,9 @@ class MainWindow(QMainWindow):
         rpp = RunPane()
         layout.addWidget(rpp)
 
+        #Data Pane
+        dp = DataPane()
+        layout.addWidget(dp)
         
 
 # You need one (and only one) QApplication instance per application.

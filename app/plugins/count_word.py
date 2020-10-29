@@ -46,6 +46,8 @@ class CountWord(Plugin):
                 index+=1
 
         print(self.state)
+
+        return self.state
         
 
         

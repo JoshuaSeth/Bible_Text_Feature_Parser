@@ -89,7 +89,7 @@ class InputList(QGroupBox):
 
     def SetList(self, input_list):
         #First clear
-        self.Clear()()
+        self.Clear()
 
         #Then
         for item in input_list:
