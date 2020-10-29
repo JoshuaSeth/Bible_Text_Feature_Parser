@@ -5,7 +5,7 @@ from PyQt5.QtGui import *
 from divisions import Passage
 from input_list import InputList
 
-passages = ["John 1:1 - 2:3"]
+passages = ["John 17:1 - 17:3"]
 
 class PassagePane(QGroupBox):
 

@@ -29,6 +29,7 @@ class DataPane(QGroupBox):
         #Give this widget a layout
         self.cur_layout = QVBoxLayout()
         self.setLayout(self.cur_layout)
+        self.setMinimumWidth(800)
 
         #The passages title
         label = QLabel("Data")

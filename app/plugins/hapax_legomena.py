@@ -27,7 +27,7 @@ class HapaxLegomena(Plugin):
             self.state[word] = 0
 
     def ScanPassages(self, row):
-        print(self.name, "has noted ", row)
+        pass
 
         # # Get the greek word
         # word = input["Greek Word"]

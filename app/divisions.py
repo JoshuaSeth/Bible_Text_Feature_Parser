@@ -2,7 +2,22 @@ import book_names as bn
 import re
 
 class Verse:
-    def __init__(self, string, previous_verse=None):
+    def __init__(self, string="", previous_verse=None, row=None):
+        #If a string was passaed
+        if string != "":
+            #Construct it from a string
+            self.CreateFromString(string, previous_verse)
+        #Else if a dataframe row was passed
+        elif row != None:
+            #Get the data from the relevant columns
+            self.book = int(row[1])
+            self.chapter = int(row[2])
+            self.verse = int(row[3])
+            self.book_name = bn.books[self.book]
+            self.post_fix = ""
+
+
+    def CreateFromString(self, string, previous_verse):
         #Check the structure of the string
         has_spaces = string.__contains__(" ")
         has_separator = string.__contains__(":")

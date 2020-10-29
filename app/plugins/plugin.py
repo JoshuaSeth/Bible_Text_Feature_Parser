@@ -21,3 +21,7 @@ class Setting:
     def OnListValChange(self, input_list):
         self.value = input_list.GetContents()
         print(self.value)
+    
+    def Tick(self):
+        self.value = not self.value
+        print(self.value)

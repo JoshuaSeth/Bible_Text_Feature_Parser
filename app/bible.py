@@ -124,13 +124,21 @@ def GetPassage(passage):
     #ACTS
     between_chapters = books_between
 
+    #Get the chapters in between if it was the same book
+    # JOHN 1:2 - 5:4 -> JOHN 2 - 4
+    same_book_between_chapters = first_book[first_book["Chapter"].between(passage.start.chapter, passage.end.chapter, inclusive=False)]
+
     #Get the first chapter of the first book
     #JOHN 3
     first_book_first_chapter = first_book.loc[first_book["Chapter"] == passage.start.chapter]
 
     #Get the last verses of this chapter
     #JOHN 3:5-21
-    first_b_c_verses = first_book_first_chapter.loc[first_book_first_chapter["Verse"].between(passage.start.verse, 999)]
+    #First verses could either be 5-21 from John 3 but could also be 1-3 from John 3
+    end_verse_nr = 999
+    if passage.start.chapter== passage.end.chapter:
+        end_verse_nr = passage.end.verse
+    first_b_c_verses = first_book_first_chapter.loc[first_book_first_chapter["Verse"].between(passage.start.verse, end_verse_nr)]
 
     #Get the last chapter of the last book
     #ROMANS 5
@@ -142,15 +150,35 @@ def GetPassage(passage):
 
     #Now concantenate them to the relevant passage
     #JOHN 3:5-21 + JOHN 4-21 + ACTS + ROMANS 1-4 + ROMANS 5:1-4
-    frames = [first_b_c_verses, first_book_chapters, between_chapters, last_book_chapters, last_b_c_verses]
+    first_b_c_verses['test'] = "first_b_c_verses"
+    first_book_chapters['test'] = "first_book_chapters"
+    between_chapters['test'] = "between_chapters"
+    last_book_chapters['test'] = "last_book_chapters"
+    last_b_c_verses['test'] = "last_b_c_verses"
+    frames = []
 
-    return pd.concat(frames)
+    #Always add the first verses
+    frames.append(first_b_c_verses)
 
-
-
-
+    #only add the other chapters from the first book if the books are different
+    if passage.start.book != passage.end.book:
+        frames.append(first_book_chapters)
+        #Same goes for the books in between
+        frames.append(between_chapters)
+        #And the starting chapters of the last book
+        frames.append(last_book_chapters)
+    #If ends in different chapter or book add the first verses of this chapter
+    if passage.start.chapter != passage.end.chapter or passage.start.book != passage.end.book:
+        frames.append(last_b_c_verses)
+    #If different chapter in the same book
+    if passage.start.chapter != passage.end.chapter and passage.start.book == passage.end.book:
+        frames.append(same_book_between_chapters)
     
-    verses
+
+    #Merge all relevant parts
+    complete = pd.concat(frames)
+
+    return complete
 
 
 def GetBible():

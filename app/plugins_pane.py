@@ -8,7 +8,6 @@ import weakref
 
 
 class PluginsPane(QGroupBox):
-
     #Register instance
     _instances = set()
 
@@ -92,6 +91,8 @@ class PluginUI(QGroupBox):
             if type(setting.value) is bool:
                 label = QLabel(name)
                 cb = QCheckBox()
+                cb.setChecked(setting.value)
+                cb.stateChanged.connect(setting.Tick)
                 label.setToolTip(setting.tooltip)
                 grid.addWidget(label, index, 0)
                 grid.addWidget(cb, index, 1)
