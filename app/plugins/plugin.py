@@ -4,6 +4,7 @@ class Plugin:
         self.name = ""
         self.description = ""
         self.ui = None
+        self.enabled = False
      
     def Note(self, state):
         pass

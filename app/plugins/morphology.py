@@ -12,6 +12,8 @@ class CountMorphology(Plugin):
         self.description = "This plugin lets you count words which match morphological criteria"
 
         self.name = "Morphological forms counter"
+        
+        self.enabled = False
 
     # Is called when the scan starts
     def OnStartScan(self):

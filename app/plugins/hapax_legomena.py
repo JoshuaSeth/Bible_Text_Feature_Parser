@@ -17,6 +17,8 @@ class HapaxLegomena(Plugin):
 
         self.name = "Hapax Legomena counter"
 
+        self.enabled = True
+
     def ScanPassages(self, passages):
         # Set up a state
         self.state={}
@@ -82,7 +84,7 @@ class HapaxLegomena(Plugin):
             verse_string = Verse(row=row).GetString()
             #Save to the verses list_val
             matching_verses.append(verse_string)
-            
+
         #Make a string from the word and the verses
         word_and_verses = word +": "
         #Add the verses to the word
@@ -107,19 +109,3 @@ class HapaxLegomena(Plugin):
 
             #The returned state will have a column for each text body it looks towards
             self.state["Hapax Legomena to " + text_body] = [0] * len(passages)
-
-
-                    
-
-                
-
-        # # Get the greek word
-        # word = input["Greek Word"]
-
-        # # If we are coutning lexemes make it the lexeme
-        # if self.settings[1].value == True:
-        #     word = input["Lexeme"]
-
-        # # IF we are counting this word add to the counter
-        # if word in self.state:
-        #     self.state[word] += 1

@@ -15,6 +15,8 @@ class CountWord(Plugin):
 
         self.name = "Word counter"
 
+        self.enabled = True
+
         
 
     def ScanPassages(self, passages_df_list):
@@ -43,7 +45,7 @@ class CountWord(Plugin):
         #If we want to save where it was found
         if self.settings["Save Verses"].value == True:
             #Add another column where this is saved to the state
-            self.state["Verses and words"] = [" "] * len(passages_df_list)
+            self.state["Verses with Words"] = [" "] * len(passages_df_list)
 
         #Determine if we search for words or lemma's
         col_name = "Greek_Word"
@@ -56,7 +58,7 @@ class CountWord(Plugin):
             #For each search term
             for word in self.settings["Search Terms: "].value: 
                 #If this is not the verse tracking column and not the totals column
-                if word != "Verses and words" and word != total_col_header:
+                if word != "Verses with Words" and word != total_col_header:
                     #If we want exactl matches
                     if self.settings["Exact Match"].value == True:
                         #Get The occurences of this word in the passage
@@ -97,7 +99,7 @@ class CountWord(Plugin):
                             word_and_verses+= verse_string + ", "
                         word_and_verses+ ". "
                         #Save this to the cell
-                        self.state["Verses and words"][index] += word_and_verses
+                        self.state["Verses with Words"][index] += word_and_verses
             index+=1
 
         return self.state

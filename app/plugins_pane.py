@@ -43,6 +43,10 @@ class PluginsPane(QGroupBox):
         qbox.addWidget(label)
         self.cur_layout.addLayout(qbox)
 
+        #Make sure the column can't get to wide
+        self.setMaximumWidth(600)
+
+
         #Load all the plugin classes
         import plugins.plugin_load as plugin_load
         plugins = plugin_load.LoadPlugins()
@@ -52,15 +56,17 @@ class PluginsPane(QGroupBox):
             #Instantiate all the classes
             instantiate = plugin()
 
-            #Keep track of them
-            self.active_plugins.append(instantiate)
+            #If this is an enabled plugin render it
+            if instantiate.enabled:
+                #Keep track of them
+                self.active_plugins.append(instantiate)
 
-            #Give this instance to a pluginUI to create UI for it
-            ui = PluginUI(instantiate)
-            self.cur_layout.addWidget(ui)
+                #Give this instance to a pluginUI to create UI for it
+                ui = PluginUI(instantiate)
+                self.cur_layout.addWidget(ui)
 
-            #Make the plugin aware of its ui
-            instantiate.ui = ui
+                #Make the plugin aware of its ui
+                instantiate.ui = ui
 
 
 

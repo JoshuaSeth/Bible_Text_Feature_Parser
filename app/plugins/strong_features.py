@@ -13,6 +13,9 @@ class StrongsFeatures(Plugin):
 
         self.name = "Strongs features counter"
 
+        self.enabled = False
+
+
     # Is called when the scan starts
     def OnStartScan(self):
         # Set up a state

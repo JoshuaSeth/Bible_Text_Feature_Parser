@@ -1,6 +1,6 @@
 import xml.etree.ElementTree as ET
 import json
-root = ET.parse('strongsgreek.xml').getroot()
+
 
 
 compoundWords= []
@@ -24,7 +24,7 @@ def AddToForeignList():
         foreignWordsCodes[strongsCode] = strongsWord
         print(strongsWord + " " + deriv.text + str(strongsCode))
 
-
+root = ET.parse('strongsgreek.xml').getroot()
 for type_tag in root.findall('entries/'):
     deriv = type_tag.find('strongs_derivation')
     if deriv is not None:
