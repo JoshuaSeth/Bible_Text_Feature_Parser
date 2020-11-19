@@ -78,7 +78,6 @@ class CountWord(Plugin):
                     #If counting Total
                     if self.settings["Only Sum Total"].value == True:
                         #Add this to the total for the passage
-                        print(self.state[total_col_header][index], num_word_in_col)
                         self.state[total_col_header][index] += num_word_in_col
                     
                     #If we want to save the verse occurences

@@ -21,7 +21,6 @@ class Setting:
     #This function presuposses this setting is a list
     def OnListValChange(self, input_list):
         self.value = input_list.GetContents()
-        print(self.value)
     
     def Tick(self):
         self.value = not self.value

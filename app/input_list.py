@@ -93,7 +93,7 @@ class InputList(QGroupBox):
 
         #Then
         for item in input_list:
-            self.AddLineEdit(string=item.replace("\n", ""))
+            self.AddLineEdit(string=str(item).replace("\n", ""))
 
     def Clear(self):
         #First remove all current LineEdits
