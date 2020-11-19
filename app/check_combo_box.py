@@ -63,9 +63,19 @@ class CheckableComboBox(QComboBox):
         for option in options:
             self.addItem(option)
 
+
     def handleItemPressed(self, index):
         item = self.model().itemFromIndex(index)
         if item.checkState() == Qt.Checked:
             item.setCheckState(Qt.Unchecked)
         else:
             item.setCheckState(Qt.Checked)
+    
+    def GetContent(self):
+        content = []
+        model = self.model()
+        for index in range(model.rowCount()):
+            item = model.item(index)
+            if item.checkState() == Qt.Checked:
+                content.append(item.text())
+        return content

@@ -5,11 +5,15 @@ from passages_pane import PassagePane
 from plugins_pane import PluginsPane
 from run_pane import RunPane
 from data_pane import DataPane
+import dialog
+import save_load
 
 # Subclass QMainWindow to customise your application's main window
 class MainWindow(QMainWindow):
 
+
     def __init__(self, *args, **kwargs):
+        #Call the super
         super(MainWindow, self).__init__(*args, **kwargs)
         
         self.setWindowTitle("My Awesome App")
@@ -21,6 +25,9 @@ class MainWindow(QMainWindow):
         # Set the central widget of the Window. Widget will expand
         # to take up all the space in the window by default.
         self.setCentralWidget(widget)
+
+        #Let save load know that this is the main window
+        save_load.SetMainWindow(self)
         
         #Add costum widgets
         #Passage Pane
@@ -38,6 +45,7 @@ class MainWindow(QMainWindow):
         #Data Pane
         dp = DataPane()
         layout.addWidget(dp)
+
         
 
 # You need one (and only one) QApplication instance per application.
