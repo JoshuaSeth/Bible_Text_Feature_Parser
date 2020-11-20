@@ -177,6 +177,7 @@ class PluginUI(QGroupBox):
             if type(setting.value) is set:
                 label = QLabel(name)
                 cbb = CheckableComboBox(setting.value)
+                self.cbb = cbb
                 label.setToolTip(setting.tooltip)
                 grid.addWidget(label, index, 0)
                 grid.addWidget(cbb, index, 1)

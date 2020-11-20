@@ -1,11 +1,13 @@
 from plugins.plugin import Plugin, Setting
+import pandas as pd
+from divisions import Verse
 
 
 class CountMorphology(Plugin):
     def __init__(self):
         # Define your settings here
-        self.settings = {"Criteria: ": Setting(set(["male", "female"]), "The morphological criteria the word should adhere to."),
-        "Save words: ": Setting(False, "If you want to save the words that match these criteria."),
+        self.settings = {"Criteria: ": Setting(set(["Feminine", "Masculine", "Adjective", "Accusative", "Plural", "Singular", "Neuter", "Numerical Indiclinable", "Neuter", "Comparative", "Superlative", "Person Gentilic", "Location Gentilic", "Negative", "Location", "Dative", "Genitive", "Nominative", "Vocative", "Adverb", "Contracted Form", "Interrogative", "Conditional Particle", "Reciprocal Pronoun", "Conjunction", "Conjunctive Particle", "Demonstrative Pronoun", "Reflexive Pronoun", "First", "Second", "Third", "Accusative", "Interrogative Pronoun", "Correlative Pronoun", "Noun", "Title", "Person", "Personal Pronoun", "Preposition", "Particle", "Disjunctive Particle", "Correlative or Interrogative Pronoun", "Relative Pronoun", "Possessive Pronoun", "Definite Article", "Verb", "second Aorist", "Active", "Passive", "Indicative", "Imperative", "Optative", "Participle", "Subjunctive", "Middle Deponent", "Middle", "Passive Deponent", "Infinitive", "No Voice Stated", "Second Future", "Second Pluperfect", "Second Present", "Second Perfect", "Aorist", "Future", "Imperfect", "Attic Form", "Pluperfect", "Present", "Perfect", "No Tense Stated", "Indefinite Pronoun"]), "The morphological criteria the word should adhere to."),
+        "Save Words: ": Setting(False, "If you want to save the words that match these criteria."),
         "Word: ":Setting("", "The morphological criteria should match a form of this lexeme. Leave empty to match criteria for any lexeme.")}
 
         # Give a description for choosing this plugin
@@ -13,26 +15,55 @@ class CountMorphology(Plugin):
 
         self.name = "Morphological forms counter"
         
-        self.enabled = False
+        self.enabled = True
+
+        #Load the mappings
+        self.mappings = pd.read_csv("data/rmac.tsv", sep="\t")
+        self.mappings = pd.Series(self.mappings.Description.values,index=self.mappings.RMAC).to_dict()
+
 
     # Is called when the scan starts
     def OnStartScan(self):
+        pass
+
+        
+
+    def ScanPassages(self, passages):
         # Set up a state
         self.state = {}
 
         # Fill the state with relevant counters
-        for word in self.settings[0].value:
-            self.state[word] = 0
+        self.state["Total"] = [0] * len(passages)
 
-    def ScanPassages(self, row):
-        pass
-        # # Get the greek word
-        # word = input["Greek Word"]
+        #If saving words and verses
+        if self.settings["Save Words: "].value == True:
+            self.state["Morphology Verses and Words"]= [" "] * len(passages)
 
-        # # If we are coutning lexemes make it the lexeme
-        # if self.settings[1].value == True:
-        #     word = input["Lexeme"]
+        #For each passage
+        index = 0
+        for df in passages:
+            #Each word
+            for id, row in df.iterrows():
+                #Assume a match until counterevidence
+                match = True
+                rmac = row["RMac"]
+                for criteria in self.ui.cbb.GetContent():
+                    #Get contents from the optional dropdown
+                    if not criteria in self.mappings[rmac]:
+                        match = False
 
-        # # IF we are counting this word add to the counter
-        # if word in self.state:
-        #     self.state[word] += 1
+                #If we have a match!
+                if match:
+                    self.state["Total"][index] += 1
+                
+                    #If we save the locations
+                    if self.settings["Save Words: "].value == True:
+                        #Make a verse and add the word to it
+                        verse_string = Verse(row=row).GetString() + ":" + row["Greek_Word"] + ", "
+                        #Add it to the state
+                        self.state["Morphology Verses and Words"][index]+= verse_string
+
+            #Track
+            index+=1
+        return self.state
+

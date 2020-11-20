@@ -13,6 +13,8 @@ class StrongsFeatures(Plugin):
 
         self.name = "Strongs features counter"
 
+        self.id = "strong_features.StrongsFeatures"
+
         self.enabled = False
 
 
@@ -25,15 +27,18 @@ class StrongsFeatures(Plugin):
         for word in self.settings[0].value:
             self.state[word] = 0
 
-    def ScanPassages(self, row):
-        pass
-        # # Get the greek word
-        # word = input["Greek Word"]
-
-        # # If we are coutning lexemes make it the lexeme
-        # if self.settings[1].value == True:
-        #     word = input["Lexeme"]
-
-        # # IF we are counting this word add to the counter
-        # if word in self.state:
-        #     self.state[word] += 1
+    def ScanPassages(self, passages):
+        root = ET.parse('strongsgreek.xml').getroot()
+        
+        #For every passage in the list of passages
+        for df in passages:
+            #If we are looking for a specific word select only the rows with this word
+            if self.settings["Word"] != "":
+                df = df[df[col_name] == word]
+            
+            for row in matches.itertuples():
+                #Make a verse for each row and save it's string
+                verse_string = Verse(row=row).GetString()
+                #Save to the verses list_val
+                matching_verses.append(verse_string)
+        

@@ -46,7 +46,7 @@ def Scan():
         #Get the header and list to make a colum
         if data is not None:
             for header, list_val in data.items():
-                print(list_val)
+                print(header, list_val)
                 df[header] = list_val
 
     #Send the results to the data pane

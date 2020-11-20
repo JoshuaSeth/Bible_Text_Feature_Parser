@@ -16,7 +16,7 @@ def GetGreekWord(input):
 #Get Bible book from 〔Book｜Chapter｜Verse〕
 def GetBook(input):
     #Get split version
-    split = GetBookChapterVerseSplit(input)
+    split = CleanSplit(input)
 
     #Returns book,
     return int(split[0])
@@ -24,7 +24,7 @@ def GetBook(input):
 #Get bible chapter ftom〔Book｜Chapter｜Verse〕
 def GetChapter(input):
     #Get split version
-    split = GetBookChapterVerseSplit(input)
+    split = CleanSplit(input)
 
     #Returns chapter
     return int(split[1])
@@ -32,12 +32,20 @@ def GetChapter(input):
 #Get bible verse from 〔Book｜Chapter｜Verse〕
 def GetVerse(input):
     #Get split
-    split = GetBookChapterVerseSplit(input)
+    split = CleanSplit(input)
 
     #Returns verse
     return int(split[2])
 
-def GetBookChapterVerseSplit(input):
+# Get Rmac from 〔OGNTk｜OGNTu｜OGNTa｜lexeme｜rmac｜sn〕
+def GetRMac(input):
+    #Get split
+    split = CleanSplit(input)
+
+    #Returns rmac
+    return split[4]
+
+def CleanSplit(input):
     #Remove brackers
     clean_input = str(input).replace("〔", "").replace("〕", "")
 
@@ -78,9 +86,15 @@ def _LoadBible():
     #Get the lexeme 
     bible_data["Lexeme"] = word_column.apply(GetLexeme)
 
-    #Only save the relevant columns
-    bible_data = bible_data[["Book", "Chapter", "Verse", "Greek_Word", "Lexeme"]]
+    #Get the rmac parent code
+    rmac_parent = bible_data["〔OGNTk｜OGNTu｜OGNTa｜lexeme｜rmac｜sn〕"]
 
+    #Create rmac codes
+    bible_data["RMac"] = rmac_parent.apply(GetRMac)
+
+    #Only save the relevant columns
+    bible_data = bible_data[["Book", "Chapter", "Verse", "Greek_Word", "Lexeme", "RMac"]]
+        
     return bible_data
 
 

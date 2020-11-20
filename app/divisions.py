@@ -1,5 +1,6 @@
 import book_names as bn
 import re
+import pandas as pd
 
 class Verse:
     def __init__(self, string="", previous_verse=None, row=None):
@@ -8,13 +9,22 @@ class Verse:
             #Construct it from a string
             self.CreateFromString(string, previous_verse)
         #Else if a dataframe row was passed
-        elif row != None:
-            #Get the data from the relevant columns
-            self.book = int(row[1])
-            self.chapter = int(row[2])
-            self.verse = int(row[3])
-            self.book_name = bn.books[self.book]
-            self.post_fix = ""
+        if type(row) is pd.Series:
+                    #Get the data from the relevant columns
+                self.book = int(row["Book"])
+                self.chapter = int(row["Chapter"])
+                self.verse = int(row["Verse"])
+                self.book_name = bn.books[self.book]
+                self.post_fix = ""
+        elif row is not None:
+            if type(row) is tuple:
+                #Get the data from the relevant columns
+                self.book = int(row[1])
+                self.chapter = int(row[2])
+                self.verse = int(row[3])
+                self.book_name = bn.books[self.book]
+                self.post_fix = ""
+            
 
 
     def CreateFromString(self, string, previous_verse):
