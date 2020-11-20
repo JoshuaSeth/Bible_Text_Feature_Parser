@@ -26,6 +26,7 @@ class InputList(QGroupBox):
         box.addWidget(self.load_btn)
         self.save_btn = QPushButton("Save")
         box.addWidget(self.save_btn)
+        self.save_btn.clicked.connect(lambda x: save_load.SaveList(self.GetContents()))
         self.top_layout.addLayout(box)
 
         #Input fields layout

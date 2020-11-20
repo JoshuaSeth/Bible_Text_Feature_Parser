@@ -64,6 +64,41 @@ def _LoadList(load_name):
 
     return list_data
 
+def SaveList(input_list):
+    df = pd.DataFrame(input_list)
+    name, file_type = SaveFile()
+    name = name.path()
+    print(name)
+    if name.endswith(".xlsx"):
+        df.to_excel(name, index=False)
+    if name.endswith(".csv") or name.endswith(".txt"):
+        df.to_csv(name, index=False)
+    if name.endswith(".feather"):
+        df.to_feather(name, index=False)
+    if name.endswith(".gbq"):
+        df.to_gbq(name, index=False)
+    if name.endswith(".hdf5"):
+        df.to_hdf(name, index=False)
+    if name.endswith(".html"):
+        df.to_html(name, index=False)
+    if name.endswith(".tex"):
+        df.to_latex(name, index=False)
+    if name.endswith(".json"):
+        df.to_json(name, index=False)
+    if name.endswith(".md"):
+        df.to_markdown(name, index=False)
+    if name.endswith(".dta"):
+        df.to_stata(name, index=False)
+    if name.endswith(".sql"):
+        df.to_sql(name, index=False)
+    if name.endswith(".records"):
+        df.to_records(name, index=False)
+    if name.endswith(".pickle") or name.endswith(".bzip") or name.endswith(".gzip") or name.endswith(".bz2") or name.endswith(".zip") or name.endswith(".xz"):
+        df.to_pickle(name, index=False)
+
+def SaveFile():
+    return QFileDialog.getSaveFileUrl()
+
 
 def OpenFile():
     fname = QFileDialog.getOpenFileName()
