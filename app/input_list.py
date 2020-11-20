@@ -13,6 +13,11 @@ class InputList(QGroupBox):
         self.setLayout(self.top_layout)
         self.top_layout.setAlignment(Qt.AlignTop)
 
+        #Check if longlist is set
+        self.long_list = False
+        
+        #Keep track of the original supplied input list
+        self.start_list = input_list
 
         #An input list should always allow you to save or load it's contents as a preset
         box = QHBoxLayout()
@@ -56,8 +61,12 @@ class InputList(QGroupBox):
             self.entries = 0
 
         #Add an input field and save its state
-        edit = QLineEdit()
+        edit = QLineEdit("",self)
         edit.setMinimumWidth(60)
+
+        #Put cursor in here
+        edit.setFocusPolicy(Qt.StrongFocus)
+        edit.setFocus()
 
         #Add initial vaule
         if string != "":
@@ -83,6 +92,9 @@ class InputList(QGroupBox):
         #Whenever text is set of some cell manually update the hooked list
         if self.hooked_item != None:
             self.hooked_item.OnListValChange(self)
+        
+        #If we have line edits we are not a long list
+        self.long_list=False
 
         #Traack entries to place new line at
         self.entries+=1
@@ -91,9 +103,18 @@ class InputList(QGroupBox):
         #First clear
         self.Clear()
 
-        #Then
-        for item in input_list:
-            self.AddLineEdit(string=str(item).replace("\n", ""))
+        #If it is not a too long list
+        if len(input_list) < 41:
+            #Then
+            for item in input_list:
+                self.AddLineEdit(string=str(item).replace("\n", ""))
+        #Else if it is to long render the list as longlistinfo
+        else:
+            self.SetLongListMode(input_list)
+        
+        #Notify the connected setting that the list value has changed
+        if self.hooked_item != None:
+            self.hooked_item.OnListValChange(self)
 
     def Clear(self):
         #First remove all current LineEdits
@@ -107,8 +128,40 @@ class InputList(QGroupBox):
         self.entries=0
     
     def GetContents(self):
-        # Fill a list with the text contents of the edit fields
-        l = []
-        for edit in self.edits:
-            l.append(edit.text())
-        return l
+        #If we are in line edit mode
+        if self.long_list == False:
+            # Fill a list with the text contents of the edit fields
+            l = []
+            for edit in self.edits:
+                l.append(edit.text())
+            return l
+        #If we are an uneditable long list
+        else:
+            #return the original supplied list
+            return self.start_list
+
+    def SetLongListMode(self, input_list=None):
+        #Only displays information about the list if the list has to many items
+
+        #Display entries
+        label = QLabel("{} terms".format(str(len(input_list))))
+        self.top_layout.addWidget(label)
+
+        #Display first and last
+        #Make a string with the first and last word
+        first_word = input_list[0]
+        second_word = input_list[1]
+        third_word = input_list[2]
+        last_word  = input_list[len(input_list)-1]
+        sec_last_word  = input_list[len(input_list)-2]
+        third_last_word  = input_list[len(input_list)-3]
+        #Concatenate to something nice
+        total = "Terms:  {}, {}, {} ... {}, {}, {}".format(first_word, second_word, third_word, third_last_word, sec_last_word, last_word)
+        #Display information about first and last words
+        label2 = QLabel(total)
+        self.top_layout.addWidget(label2)
+
+        #We are now in longlist mode
+        self.long_list=True
+
+        self.start_list = input_list

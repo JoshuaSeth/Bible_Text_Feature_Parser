@@ -15,7 +15,6 @@ class CustomDialog(QInputDialog):
 
         print('running dialog')
 
-
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
         self.label = QLabel('yey')

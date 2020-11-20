@@ -1,7 +1,8 @@
 import pickle
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
-from PyQt5.QtGui import *import dialog
+from PyQt5.QtGui import *
+import dialog
 import pandas as pd
 
 def SetMainWindow(main_win):
