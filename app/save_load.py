@@ -6,6 +6,8 @@ import dialog
 import pandas as pd
 from workspace import WorkSpace
 import passages_pane
+import plugins_pane
+import data_pane
 
 def SetMainWindow(main_win):
     global main_window
@@ -34,9 +36,15 @@ def _SaveWorkspace():
     ws = WorkSpace()
     #Get access to the passage pane instance
     for pp in passages_pane.PassagePane.getinstances():
-        passage_pane = pp
+        pasages = pp
     ws.__dict__["Passages"] = pp.GetPassages(parsed=False)
-    print(ws.__dict__)
+    #Get access to the plugins pane instance
+    for ppa in plugins_pane.PluginsPane.getinstances():
+        plugins = ppa
+    ws.__dict__["Plugins"] = []
+    for plugin in ppa.active_plugins:
+        ws.__dict__["Plugins"].append(plugin.GetAsDict())
+
     #Get the location for the save
     filters = "Workspaces (*.workspace)"
     selected_filter = "Workspaces (*.workspace)"
@@ -56,6 +64,13 @@ def _OpenWorkspace(fname):
     #Load the passages into the pane
     pp.SetPassages(ws.__dict__["Passages"])
 
+    #Load the plugins pane
+    for ppa in plugins_pane.PluginsPane.getinstances():
+        plugins = ppa
+    
+    #Open the plugins that were saved
+    for plugin in ws.__dict__["Plugins"]:
+        ppa.OpenPluginByName(plugin[4])
     
 
 def _Save(object, save_name):

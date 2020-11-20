@@ -5,13 +5,18 @@ class Plugin:
         self.description = ""
         self.ui = None
         self.enabled = False
-     
-    def Note(self, state):
-        pass
+        self.id = ""
 
     def OnStartScan(self):
         # Set up a state
         self.state = {}
+    
+    def GetAsDict(self):
+        l = [self.name, [], self.description, self.enabled, self.id]
+        for key, setting in self.settings.items():
+            l[1].append(setting.value)
+        return l
+
 
 class Setting:
     def __init__(self, value, tooltip):

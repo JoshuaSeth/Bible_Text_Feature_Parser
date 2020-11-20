@@ -15,8 +15,9 @@ class CountWord(Plugin):
 
         self.name = "Word counter"
 
-        self.enabled = True
+        self.id = "count_word.CountWord"
 
+        self.enabled = True
         
 
     def ScanPassages(self, passages_df_list):

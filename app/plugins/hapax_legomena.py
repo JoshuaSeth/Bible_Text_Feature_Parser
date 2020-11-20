@@ -17,6 +17,8 @@ class HapaxLegomena(Plugin):
 
         self.name = "Hapax Legomena counter"
 
+        self.id = "hapax_legomena.HapaxLegomena"
+
         self.enabled = True
 
     def ScanPassages(self, passages):

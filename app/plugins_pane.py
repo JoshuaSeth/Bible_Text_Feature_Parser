@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-from input_list import InputList
+import input_list
 from check_combo_box import CheckableComboBox
 import os
 import weakref
@@ -48,25 +48,46 @@ class PluginsPane(QGroupBox):
 
 
         #Load all the plugin classes
+        self.LoadAllPlugins()
+
+    def LoadAllPlugins(self):
+        #Load all the plugin classes
         import plugins.plugin_load as plugin_load
-        plugins = plugin_load.LoadPlugins()
+        self.plugins_library = plugin_load.LoadPlugins()
 
         self.active_plugins = []
-        for plugin in plugins:
+        for plugin in self.plugins_library:
             #Instantiate all the classes
-            instantiate = plugin()
+            self._InstantiatePlugin(plugin)
 
-            #If this is an enabled plugin render it
-            if instantiate.enabled:
-                #Keep track of them
-                self.active_plugins.append(instantiate)
+    def _InstantiatePlugin(self, plugin):
+        instantiate = plugin()
 
-                #Give this instance to a pluginUI to create UI for it
-                ui = PluginUI(instantiate)
-                self.cur_layout.addWidget(ui)
+        #If this is an enabled plugin render it
+        if instantiate.enabled:
+            #Keep track of them
+            self.active_plugins.append(instantiate)
 
-                #Make the plugin aware of its ui
-                instantiate.ui = ui
+            #Give this instance to a pluginUI to create UI for it
+            ui = PluginUI(instantiate)
+            self.cur_layout.addWidget(ui)
+
+            #Make the plugin aware of its ui
+            instantiate.ui = ui
+    
+    def OpenPluginByName(self, name):
+        print(self.plugins_library)
+        plugin = self.FindPlugin(name)
+        self._InstantiatePlugin(plugin)
+
+
+    def FindPlugin(self, name):
+        for plugin in self.plugins_library:
+            if str(plugin) == "<class 'plugins.{}'>".format(name):
+                return plugin
+        return None
+
+
 
 
 
@@ -141,10 +162,10 @@ class PluginUI(QGroupBox):
                 label.setFont(QFont('Arial', 16))
                 #By hooking the setting to the input list the settings contents are updated whenever one of the input fields updates
                 if len(setting.value)==0:
-                    input_list = InputList(hooked_item=setting)
+                    i_list = input_list.InputList(hooked_item=setting)
                 else:
-                    input_list = InputList(setting.value, hooked_item=setting)
-                layout.addWidget(input_list)
+                    i_list = input_list.InputList(setting.value, hooked_item=setting)
+                layout.addWidget(i_list)
 
             index+=1
 
