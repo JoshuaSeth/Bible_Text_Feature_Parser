@@ -22,7 +22,7 @@ def OpenFile(is_workspace=False):
         selected_filter = "Workspaces (*.workspace)"
         fname = QFileDialog.getOpenFileName(filter=filters,initialFilter= selected_filter)
         fname = fname[0]
-        _OpenWorkspace(fname) 
+        _OpenWorkspace(fname)
 
 def SaveFile(save_file=None):
     #If it is a list or dataframe save it with the pandas saving method

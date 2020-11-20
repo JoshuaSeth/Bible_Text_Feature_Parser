@@ -64,7 +64,7 @@ class PluginsPane(QGroupBox):
             else:
                 self.Clear(item.layout())
 
-        #When clearing also clear edits otherwise we will have old iput fields
+        #When clearing also clear edits otherwise we will have old input fields
         self.active_plugins = []
 
     def LoadAllPlugins(self):

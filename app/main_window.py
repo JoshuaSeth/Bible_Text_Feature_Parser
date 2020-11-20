@@ -46,18 +46,22 @@ class MainWindow(QMainWindow):
         dp = DataPane()
         layout.addWidget(dp)
 
-        #Check for some basic keys
-        #Saving
-        save_sc_ctrl = QShortcut(QKeySequence("Ctrl+S"), self)
-        save_sc_ctrl.activated.connect(save_load.SaveFile)
-        save_sc_cmd = QShortcut(QKeySequence("Cmd+S"), self)
-        save_sc_cmd.activated.connect(save_load.SaveFile)
+        #Make a menu bar
+        # filling up a menu bar
+        bar = self.menuBar()
+        # File menu
+        file_menu = bar.addMenu('File')
+        # adding actions to file menu
+        open_action = QAction('Open', self)
+        open_action.setShortcuts(["Cmd+o", "Ctrl+o"])
+        save_action = QAction('Save', self)
+        save_action.setShortcuts(["Cmd+s, Ctrl+s"])
+        file_menu.addAction(open_action)
+        file_menu.addAction(save_action)
 
-        #Opening
-        open_sc_ctrl = QShortcut(QKeySequence("Ctrl+O"), self)
-        open_sc_ctrl.activated.connect(lambda x=True: save_load.OpenFile(x))
-        open_sc_cmd = QShortcut(QKeySequence("Cmd+O"), self)
-        open_sc_cmd.activated.connect(lambda x=True: save_load.OpenFile(x))
+        #Connect actions to closing and opening
+        open_action.triggered.connect(lambda x=True: save_load.OpenFile(True))
+        save_action.triggered.connect(lambda x=True: save_load.SaveFile(None))
 
         
 
