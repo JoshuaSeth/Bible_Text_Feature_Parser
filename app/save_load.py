@@ -69,8 +69,7 @@ def _OpenWorkspace(fname):
         plugins = ppa
     
     #Open the plugins that were saved
-    for plugin in ws.__dict__["Plugins"]:
-        ppa.OpenPluginByName(plugin[4])
+    ppa.LoadPluginsFromWorkspace(ws)
     
 
 def _Save(object, save_name):

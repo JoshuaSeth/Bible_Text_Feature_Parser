@@ -45,10 +45,27 @@ class PluginsPane(QGroupBox):
 
         #Make sure the column can't get to wide
         self.setMaximumWidth(600)
-
+        #Add a box for the pluginsQVBoxLayout()
+        self.plugins_uis = QVBoxLayout()
+        self.cur_layout.addLayout(self.plugins_uis)
+        self.plugins_uis.setAlignment(Qt.AlignTop)
 
         #Load all the plugin classes
         self.LoadAllPlugins()
+    
+    def Clear(self, layout):
+        #Removes all plugin UIs
+        #First remove all current LineEdits
+        while layout.count():
+            item = layout.takeAt(0)
+            widget = item.widget()
+            if widget is not None:
+                widget.deleteLater()
+            else:
+                self.Clear(item.layout())
+
+        #When clearing also clear edits otherwise we will have old iput fields
+        self.active_plugins = []
 
     def LoadAllPlugins(self):
         #Load all the plugin classes
@@ -60,8 +77,12 @@ class PluginsPane(QGroupBox):
             #Instantiate all the classes
             self._InstantiatePlugin(plugin)
 
-    def _InstantiatePlugin(self, plugin):
+    def _InstantiatePlugin(self, plugin, preset=None):
         instantiate = plugin()
+
+        #Fill the plugin with preset values
+        if preset != None:
+            instantiate.LoadPreset(preset)
 
         #If this is an enabled plugin render it
         if instantiate.enabled:
@@ -70,15 +91,23 @@ class PluginsPane(QGroupBox):
 
             #Give this instance to a pluginUI to create UI for it
             ui = PluginUI(instantiate)
-            self.cur_layout.addWidget(ui)
+            self.plugins_uis.addWidget(ui)
 
             #Make the plugin aware of its ui
             instantiate.ui = ui
     
-    def OpenPluginByName(self, name):
+    def LoadPluginsFromWorkspace(self, workspace):
+        #Empty the workspace when doing this
+        self.Clear(self.plugins_uis)
+
+        #Load the plugins by their names
+        for plugin in workspace.__dict__["Plugins"]:
+            self.OpenPluginByName(plugin[4], plugin)
+    
+    def OpenPluginByName(self, name, preset=None):
         print(self.plugins_library)
         plugin = self.FindPlugin(name)
-        self._InstantiatePlugin(plugin)
+        self._InstantiatePlugin(plugin, preset)
 
 
     def FindPlugin(self, name):

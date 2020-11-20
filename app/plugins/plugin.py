@@ -14,8 +14,19 @@ class Plugin:
     def GetAsDict(self):
         l = [self.name, [], self.description, self.enabled, self.id]
         for key, setting in self.settings.items():
-            l[1].append(setting.value)
+            l[1].append([key, setting.value])
         return l
+    
+    def LoadPreset(self, preset):
+        #Some values can be taken from the preset easily
+        self.name = preset[0]
+        self.description = preset[2]
+        self.enabled = preset[3]
+        self.id = preset[4]
+
+        #Reconstruct the settings from their values
+        for key, setting in preset[1]:
+            self.settings[key].value = setting
 
 
 class Setting:
