@@ -21,13 +21,17 @@ class InputList(QGroupBox):
 
         #An input list should always allow you to save or load it's contents as a preset
         box = QHBoxLayout()
+        self.top_layout.addLayout(box)
+
+        #Create a loadbutton
         self.load_btn = QPushButton("Load")
         self.load_btn.clicked.connect(self.OpenListPreset)
         box.addWidget(self.load_btn)
+        
+        #Create a save button
         self.save_btn = QPushButton("Save")
         box.addWidget(self.save_btn)
-        self.save_btn.clicked.connect(lambda x: save_load.SaveList(self.GetContents()))
-        self.top_layout.addLayout(box)
+        self.save_btn.clicked.connect(lambda x: save_load.SaveFile(self.GetContents()))
 
         #Input fields layout
         self.cur_layout = QGridLayout()
@@ -103,6 +107,8 @@ class InputList(QGroupBox):
     def SetList(self, input_list):
         #First clear
         self.Clear()
+
+        print(input_list)
 
         #If it is not a too long list
         if len(input_list) < 41:

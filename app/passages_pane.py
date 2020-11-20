@@ -51,16 +51,26 @@ class PassagePane(QGroupBox):
         #Give the pane an input list for the passages
         self.list = InputList(passages)
         self.cur_layout.addWidget(self.list)
+    
+    #Set the list of the child element
+    def SetPassages(self, input_list):
+        self.list.SetList(input_list)
 
-    def GetPassages(self, as_string=False):
+    def GetPassages(self, as_string=False, parsed=True):
         # Return a passage instance based on the input contents
-        l = []
-        for item in self.list.GetContents():
-            if not as_string:
-                l.append(Passage(item))
-            else:
-                l.append(Passage(item).GetString())
-        return l
+        #If just the unparsed list 
+        if not parsed:
+            return self.list.GetContents()
+        #Else if parsed
+        else:
+            l = []
+            #Either return the passages or the strings of them
+            for item in self.list.GetContents():
+                if not as_string:
+                    l.append(Passage(item))
+                else:
+                    l.append(Passage(item).GetString())
+            return l
 
 
 

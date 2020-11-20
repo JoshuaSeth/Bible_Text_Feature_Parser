@@ -1,8 +1,8 @@
 class WorkSpace:
     def __init__(self):
-        self.plugins = []
-        self.passage_pane = None
-        self.data = None
+        self.__dict__["Passages"] = None
+        self.__dict__["Data"] = None
+        self.__dict__["Plugins"] = None
     
-    
+
 

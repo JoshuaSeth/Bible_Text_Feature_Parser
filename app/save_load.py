@@ -4,10 +4,59 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 import dialog
 import pandas as pd
+from workspace import WorkSpace
+import passages_pane
 
 def SetMainWindow(main_win):
     global main_window
     main_window = main_win
+
+def OpenFile(is_workspace=False):
+    if not is_workspace:
+        fname = QFileDialog.getOpenFileName()
+        return _LoadList(fname[0])
+    else:
+        filters = "Workspaces (*.workspace)"
+        selected_filter = "Workspaces (*.workspace)"
+        fname = QFileDialog.getOpenFileName(filter=filters,initialFilter= selected_filter)
+        fname = fname[0]
+        _OpenWorkspace(fname) 
+
+def SaveFile(save_file=None):
+    #If it is a list or dataframe save it with the pandas saving method
+    if type(save_file) is list or type(save_file) is pd.DataFrame:
+        _SaveList(save_file)
+    if save_file is None:
+        _SaveWorkspace()
+
+def _SaveWorkspace():
+    #Create a new workspace object to save
+    ws = WorkSpace()
+    #Get access to the passage pane instance
+    for pp in passages_pane.PassagePane.getinstances():
+        passage_pane = pp
+    ws.__dict__["Passages"] = pp.GetPassages(parsed=False)
+    print(ws.__dict__)
+    #Get the location for the save
+    filters = "Workspaces (*.workspace)"
+    selected_filter = "Workspaces (*.workspace)"
+    name, file_type = QFileDialog.getSaveFileUrl()
+    name = name.path()
+    #Save the workspace
+    _Save(ws, name)
+
+def _OpenWorkspace(fname):
+    #Open a workspace to the panes
+    ws = _Load(fname)
+    print(ws.__dict__)
+
+    #Get access to the passage pane instance
+    for pp in passages_pane.PassagePane.getinstances():
+        passage_pane = pp
+    #Load the passages into the pane
+    pp.SetPassages(ws.__dict__["Passages"])
+
+    
 
 def _Save(object, save_name):
     with open(save_name, "wb") as fp:   #Pickling
@@ -64,9 +113,9 @@ def _LoadList(load_name):
 
     return list_data
 
-def SaveList(input_list):
+def _SaveList(input_list):
     df = pd.DataFrame(input_list)
-    name, file_type = SaveFile()
+    name, file_type = QFileDialog.getSaveFileUrl()
     name = name.path()
     print(name)
     if name.endswith(".xlsx"):
@@ -96,15 +145,7 @@ def SaveList(input_list):
     if name.endswith(".pickle") or name.endswith(".bzip") or name.endswith(".gzip") or name.endswith(".bz2") or name.endswith(".zip") or name.endswith(".xz"):
         df.to_pickle(name, index=False)
 
-def SaveFile():
-    return QFileDialog.getSaveFileUrl()
-
-
-def OpenFile():
-    fname = QFileDialog.getOpenFileName()
-    return _LoadList(fname[0])
-
-def AskItems(columns):
+def _AskItems(columns):
         dia = dialog.CustomDialog(main_window, columns)
         value = dia.exec_()
         if value:

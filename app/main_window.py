@@ -46,6 +46,19 @@ class MainWindow(QMainWindow):
         dp = DataPane()
         layout.addWidget(dp)
 
+        #Check for some basic keys
+        #Saving
+        save_sc_ctrl = QShortcut(QKeySequence("Ctrl+S"), self)
+        save_sc_ctrl.activated.connect(save_load.SaveFile)
+        save_sc_cmd = QShortcut(QKeySequence("Cmd+S"), self)
+        save_sc_cmd.activated.connect(save_load.SaveFile)
+
+        #Opening
+        open_sc_ctrl = QShortcut(QKeySequence("Ctrl+O"), self)
+        open_sc_ctrl.activated.connect(lambda x=True: save_load.OpenFile(x))
+        open_sc_cmd = QShortcut(QKeySequence("Cmd+O"), self)
+        open_sc_cmd.activated.connect(lambda x=True: save_load.OpenFile(x))
+
         
 
 # You need one (and only one) QApplication instance per application.
