@@ -61,7 +61,7 @@ class CheckableComboBox(QComboBox):
         self.setModel(QStandardItemModel(self))
 
         for option in options:
-            self.addItem(option)
+            self.addItem(str(option))
 
     def handleItemPressed(self, index):
         item = self.model().itemFromIndex(index)

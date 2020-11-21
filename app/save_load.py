@@ -16,13 +16,19 @@ def SetMainWindow(main_win):
 def OpenFile(is_workspace=False):
     if not is_workspace:
         fname = QFileDialog.getOpenFileName()
-        return _LoadList(fname[0])
+        #If the cancel button wasn pressed
+        if fname is not None:
+            return _LoadList(fname[0])
+        else:
+            return None
     else:
         filters = "Workspaces (*.workspace)"
         selected_filter = "Workspaces (*.workspace)"
         fname = QFileDialog.getOpenFileName(filter=filters,initialFilter= selected_filter)
-        fname = fname[0]
-        _OpenWorkspace(fname)
+        #If the cancel button wasn pressed
+        if fname is not None:
+            fname = fname[0]
+            _OpenWorkspace(fname)
 
 def SaveFile(save_file=None):
     #If it is a list or dataframe save it with the pandas saving method
@@ -82,6 +88,7 @@ def _Load(load_name):
     return b
 
 def _LoadList(load_name):
+    data = None
     if load_name.endswith(".txt") or load_name.endswith(".csv"):
         data = pd.read_csv(load_name, sep = None, engine='python')
     if load_name.endswith(".xlsx"):
@@ -115,15 +122,20 @@ def _LoadList(load_name):
     if load_name.endswith(".sql"):
         data = pd.read_sql(load_name)
 
+    #Might be because of cancel button
+    if type(data) != pd.DataFrame:
+        return None
+
     #If we have more than one column
     if data.shape[1] > 1:
         #Ask in a dialog to select a column
-        cols = AskItems(data.columns)
+        cols = _AskItems(data.columns)
     
     #Now put the columns after each other in a list
     list_data = []
-    for col in cols:
-        list_data.extend(data[col].tolist())
+    if cols is not None:
+        for col in cols:
+            list_data.extend(data[col].tolist())
 
     return list_data
 
@@ -160,8 +172,7 @@ def _SaveList(input_list):
         df.to_pickle(name, index=False)
 
 def _AskItems(columns):
-        dia = dialog.CustomDialog(main_window, columns)
-        value = dia.exec_()
-        if value:
-            print(value)
+        value, ok = dialog.CustomDialog(main_window, columns).exec_()
+        if not ok:
+            return None
         return value

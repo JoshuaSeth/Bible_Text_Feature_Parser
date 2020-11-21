@@ -90,9 +90,10 @@ class PluginsPane(QGroupBox):
         return l
 
     def ChooseAddPlugin(self):
-        chosen = dialog.CustomDialog(self, self.GetLibraryString()).exec_()
-        print(chosen[0])
-        self.OpenPluginByName(chosen[0])
+        #chosen = dialog.CustomDialog(self, self.GetLibraryString()).exec_()
+        chosen, ok = QInputDialog.getItem(self, "Get item","Color:", self.GetLibraryString(), 0, False)
+        if ok:
+            self.OpenPluginByName(chosen)
 
     
     def ClosePlugin(self, plugin_ui):

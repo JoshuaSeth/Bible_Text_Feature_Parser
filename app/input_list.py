@@ -61,8 +61,13 @@ class InputList(QGroupBox):
             self.AddLineEdit()
     
     def OpenListPreset(self):
+        #Ask load module for a list
         input_list = save_load.OpenFile()
-        self.SetList(input_list)
+        #If the cancel was not pressed
+        if input_list is not None:
+            #If it is not an empty list
+            if len(input_list) > 0:
+                self.SetList(input_list)
 
     def AddLineEdit(self, string=""):
         #If we want a resizable list
