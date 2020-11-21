@@ -126,6 +126,7 @@ def _LoadList(load_name):
     if type(data) != pd.DataFrame:
         return None
 
+    cols = None
     #If we have more than one column
     if data.shape[1] > 1:
         #Ask in a dialog to select a column
@@ -136,6 +137,9 @@ def _LoadList(load_name):
     if cols is not None:
         for col in cols:
             list_data.extend(data[col].tolist())
+    #Else jsut take the first column as a list
+    else:
+        list_data = data.iloc[:, 0].tolist()
 
     return list_data
 
