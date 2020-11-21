@@ -49,8 +49,14 @@ class PassagePane(QGroupBox):
         self.cur_layout.setAlignment(Qt.AlignTop)
         
         #Give the pane an input list for the passages
-        self.list = InputList(passages)
-        self.cur_layout.addWidget(self.list)
+        self.list = InputList(passages, has_columns=False, allow_summary=False)
+
+        #Make the plugins part of a scroll area
+        scroll = QScrollArea()
+        scroll.setAlignment(Qt.AlignTop)
+        self.cur_layout.addWidget(scroll)
+        scroll.setWidget(self.list)
+        scroll.setWidgetResizable(True)
     
     #Set the list of the child element
     def SetPassages(self, input_list):

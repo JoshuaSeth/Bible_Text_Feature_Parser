@@ -47,6 +47,8 @@ class PluginUI(QGroupBox):
         grid = QGridLayout()
         layout.addLayout(grid)
 
+        #Make sure it cant get to small
+
         index = 0
         for name, setting in plugin.settings.items():
             #If it is an int make a spinbox

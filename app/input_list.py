@@ -5,7 +5,7 @@ import save_load
 from pic_button import PicButton
 
 class InputList(QGroupBox):
-    def __init__(self, input_list=None, hooked_item=None):
+    def __init__(self, input_list=None, hooked_item=None, has_columns=True, allow_summary=False):
         #Initialize element
         super(InputList, self).__init__()
 
@@ -13,6 +13,10 @@ class InputList(QGroupBox):
         self.top_layout = QVBoxLayout()
         self.setLayout(self.top_layout)
         self.top_layout.setAlignment(Qt.AlignTop)
+
+        #Track some bools
+        self.has_columns = has_columns
+        self.allow_summary = allow_summary
 
         #Check if longlist is set
         self.long_list = False
@@ -61,10 +65,12 @@ class InputList(QGroupBox):
         self.SetList(input_list)
 
     def AddLineEdit(self, string=""):
-        #Start a new column at 10 lines
-        if self.entries == 10:
-            self.column_num+=2
-            self.entries = 0
+        #If we want a resizable list
+        if self.has_columns:
+            #Start a new column at 10 lines
+            if self.entries == 10:
+                self.column_num+=2
+                self.entries = 0
 
         #Add an input field and save its state
         edit = QLineEdit("",self)
@@ -110,23 +116,25 @@ class InputList(QGroupBox):
         self.entries+=1
     
     def RemoveEdit(self, edit):
-        #Get current contents except for the current edit
-        content = self.GetContents(exclude_edit=edit)
+        #Only if there is more than one entry, we dont want an empty list
+        if self.entries > 1:
+            #Get current contents except for the current edit
+            content = self.GetContents(exclude_edit=edit)
 
-        #Set list
-        self.SetList(content)
+            #Set list
+            self.SetList(content)
 
     def SetList(self, input_list):
         #First clear
         self.Clear()
         
         #If it is not a too long list
-        if len(input_list) < 41:
+        if len(input_list) < 41 or not self.allow_summary:
             #Then
             for item in input_list:
                 self.AddLineEdit(string=str(item).replace("\n", ""))
         #Else if it is to long render the list as longlistinfo
-        else:
+        elif self.allow_summary:
             self.SetLongListMode(input_list)
         
         #Notify the connected setting that the list value has changed

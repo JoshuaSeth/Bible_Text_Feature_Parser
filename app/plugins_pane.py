@@ -5,6 +5,8 @@ import input_list
 import os
 import weakref
 import plugin_ui
+from pic_button import PicButton
+import dialog
 
 class PluginsPane(QGroupBox):
     #Register instance
@@ -34,23 +36,64 @@ class PluginsPane(QGroupBox):
         self.cur_layout.setAlignment(Qt.AlignTop)
         # self.cur_layout.setContentsMargins(2, 2, 2, 2)
 
+        #A button to add plugins
+        pixmap = QPixmap("/Users/sethvanderbijl/Coding Projects/Bible_features/app/add.png")
+        add = PicButton(pixmap)
+        add.setMaximumWidth(26)
+        add.setMaximumHeight(26)
+        add.clicked.connect(self.ChooseAddPlugin)
+        # add.clicked.connect()
+
         #The plugins title
         label = QLabel("Plugins")
         label.setFont(QFont('Arial', 28))
+
+        #AlignTop
+        top = QHBoxLayout()
+        top.addWidget(label)
+        top.addWidget(add)
+
+        #Middle
         qbox = QVBoxLayout()
         qbox.setAlignment(Qt.AlignCenter)
-        qbox.addWidget(label)
+
+        #Add it all to the main layout
+        self.cur_layout.addLayout(top)
         self.cur_layout.addLayout(qbox)
 
         #Make sure the column can't get to wide
         self.setMaximumWidth(600)
         #Add a box for the pluginsQVBoxLayout()
+        
+        #The box for the plugins
         self.plugins_uis = QVBoxLayout()
-        self.cur_layout.addLayout(self.plugins_uis)
         self.plugins_uis.setAlignment(Qt.AlignTop)
+
+        #We need a temp widget otherwise we cant child it to the scroll
+        self.temp_widget = QWidget()
+        self.temp_widget.setLayout(self.plugins_uis)
+
+        #Make the plugins part of a scroll area
+        scroll = QScrollArea()
+        scroll.setAlignment(Qt.AlignTop)
+        self.cur_layout.addWidget(scroll)
+        scroll.setWidget(self.temp_widget)
+        scroll.setWidgetResizable(True)
 
         #Load all the plugin classes
         self.LoadAllPlugins()
+    
+    def GetLibraryString(self):
+        l = []
+        for plugin_i in self.plugins_library:
+            l.append(str(plugin_i))
+        return l
+
+    def ChooseAddPlugin(self):
+        chosen = dialog.CustomDialog(self, self.GetLibraryString()).exec_()
+        print(chosen[0])
+        self.OpenPluginByName(chosen[0])
+
     
     def ClosePlugin(self, plugin_ui):
         self.active_plugins.remove(plugin_ui.plugin)
@@ -108,14 +151,13 @@ class PluginsPane(QGroupBox):
             self.OpenPluginByName(plugin[4], plugin)
     
     def OpenPluginByName(self, name, preset=None):
-        print(self.plugins_library)
         plugin = self.FindPlugin(name)
         self._InstantiatePlugin(plugin, preset)
 
 
     def FindPlugin(self, name):
         for plugin in self.plugins_library:
-            if str(plugin) == "<class 'plugins.{}'>".format(name):
+            if str(plugin) == "<class 'plugins.{}'>".format(name) or str(plugin) == name:
                 return plugin
         return None
 
