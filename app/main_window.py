@@ -38,13 +38,18 @@ class MainWindow(QMainWindow):
         plp = PluginsPane()
         layout.addWidget(plp)
         
-        #Run program Pane
-        rpp = RunPane()
-        layout.addWidget(rpp)
+        #Pane for layout and program
+        run_data = QVBoxLayout()
+        layout.addLayout(run_data)
 
         #Data Pane
         dp = DataPane()
-        layout.addWidget(dp)
+        run_data.addWidget(dp)
+
+        #Run program Pane
+        rpp = RunPane()
+        rpp.setMaximumHeight(60)
+        run_data.addWidget(rpp)
 
         #Make a menu bar
         # filling up a menu bar

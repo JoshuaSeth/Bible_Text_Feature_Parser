@@ -13,17 +13,17 @@ class RunPane(QGroupBox):
         #Give this widget a layout
         self.cur_layout = QVBoxLayout()
         self.setLayout(self.cur_layout)
-        self.cur_layout.setAlignment(Qt.AlignTop)
+        self.cur_layout.setAlignment(Qt.AlignRight)
 
         #The run title
-        label = QLabel("Run Program")
-        label.setFont(QFont('Arial', 28))
         qbox = QVBoxLayout()
         qbox.setAlignment(Qt.AlignCenter)
-        qbox.addWidget(label)
         self.cur_layout.addLayout(qbox)
 
         self.run = QPushButton("Run")
+        self.run.setMaximumWidth(200)
+        self.run.setMinimumWidth(200)
+        
 
         #Connect it to running the script
         self.run.clicked.connect(scan.Scan)

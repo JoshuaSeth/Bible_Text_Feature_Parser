@@ -33,14 +33,14 @@ class PluginUI(QGroupBox):
         close.clicked.connect(self.ClosePlugin)
 
         #Give it a save button
-        save = QPushButton("Save Preset")
-        save.setMaximumWidth(100)
+        # save = QPushButton("Save Preset")
+        # save.setMaximumWidth(100)
 
         #Give the top a container
         top = QHBoxLayout()
         layout.addLayout(top)
         top.addWidget(label)
-        top.addWidget(save)
+        # top.addWidget(save)
         top.addWidget(close)
 
         #Put the settings in a grid
