@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 import save_load
+from pic_button import PicButton
 
 class InputList(QGroupBox):
     def __init__(self, input_list=None, hooked_item=None):
@@ -90,8 +91,12 @@ class InputList(QGroupBox):
         self.edits.append(edit)
 
         #Add a remove button
-        btn = QPushButton("x")
-        btn.setFixedWidth(30)
+        #Give it a close button
+        pixmap = QPixmap("/Users/sethvanderbijl/Coding Projects/Bible_features/app/close.png")
+        btn = PicButton(pixmap)
+        btn.setMaximumWidth(15)
+        btn.setMaximumHeight(15)
+        btn.clicked.connect(lambda x: self.RemoveEdit(edit))
         self.cur_layout.addWidget(btn, self.entries, self.column_num+1)
 
         #Whenever text is set of some cell manually update the hooked list
@@ -103,13 +108,18 @@ class InputList(QGroupBox):
 
         #Traack entries to place new line at
         self.entries+=1
+    
+    def RemoveEdit(self, edit):
+        #Get current contents except for the current edit
+        content = self.GetContents(exclude_edit=edit)
+
+        #Set list
+        self.SetList(content)
 
     def SetList(self, input_list):
         #First clear
         self.Clear()
-
-        print(input_list)
-
+        
         #If it is not a too long list
         if len(input_list) < 41:
             #Then
@@ -134,13 +144,14 @@ class InputList(QGroupBox):
         #Start at the first entry
         self.entries=0
     
-    def GetContents(self):
+    def GetContents(self, exclude_edit=None):
         #If we are in line edit mode
         if self.long_list == False:
             # Fill a list with the text contents of the edit fields
             l = []
             for edit in self.edits:
-                l.append(edit.text())
+                if edit != exclude_edit:
+                    l.append(edit.text())
             return l
         #If we are an uneditable long list
         else:

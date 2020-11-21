@@ -54,7 +54,6 @@ class PluginUI(QGroupBox):
                 label = QLabel(name)
                 cb = QSpinBox()
                 cb.setValue(setting.value)
-                print("creating spinbox", setting, setting.value)
                 setting.ui = cb
                 cb.valueChanged.connect(setting.OnIntChanged)
                 label.setToolTip(setting.tooltip)
