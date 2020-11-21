@@ -3,6 +3,8 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 import input_list
 from check_combo_box import CheckableComboBox
+from pic_button import PicButton
+import plugins_pane
 
 #Display a plugin
 class PluginUI(QGroupBox):
@@ -12,14 +14,34 @@ class PluginUI(QGroupBox):
         #Give this widget a layout
         layout = QVBoxLayout()
 
+        #Track the actual plugin connected
+        self.plugin = plugin
+
         #Make layout start at top instead of middle
         layout.setAlignment(Qt.AlignTop)
         self.setLayout(layout)
 
         #Give the plugin a title
         label = QLabel(plugin.name)
-        label.setFont(QFont('Arial', 20))
-        layout.addWidget(label)
+        label.setFont(QFont('Arial', 24))
+
+        #Give it a close button
+        pixmap = QPixmap("/Users/sethvanderbijl/Coding Projects/Bible_features/app/close.png")
+        close = PicButton(pixmap)
+        close.setMaximumWidth(20)
+        close.setMaximumHeight(20)
+        close.clicked.connect(self.ClosePlugin)
+
+        #Give it a save button
+        save = QPushButton("Save Preset")
+        save.setMaximumWidth(100)
+
+        #Give the top a container
+        top = QHBoxLayout()
+        layout.addLayout(top)
+        top.addWidget(label)
+        top.addWidget(save)
+        top.addWidget(close)
 
         #Put the settings in a grid
         grid = QGridLayout()
@@ -82,3 +104,7 @@ class PluginUI(QGroupBox):
                 layout.addWidget(i_list)
 
             index+=1
+
+    def ClosePlugin(self):
+        for pp in plugins_pane.PluginsPane.getinstances():
+            pp.ClosePlugin(self)

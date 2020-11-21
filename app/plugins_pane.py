@@ -52,6 +52,10 @@ class PluginsPane(QGroupBox):
         #Load all the plugin classes
         self.LoadAllPlugins()
     
+    def ClosePlugin(self, plugin_ui):
+        self.active_plugins.remove(plugin_ui.plugin)
+        plugin_ui.deleteLater()
+    
     def Clear(self, layout):
         #Removes all plugin UIs
         #First remove all current LineEdits
