@@ -63,7 +63,6 @@ class CheckableComboBox(QComboBox):
         for option in options:
             self.addItem(option)
 
-
     def handleItemPressed(self, index):
         item = self.model().itemFromIndex(index)
         if item.checkState() == Qt.Checked:
