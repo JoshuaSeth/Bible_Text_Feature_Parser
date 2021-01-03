@@ -1,6 +1,7 @@
 from plugins.plugin import Plugin, Setting
 from divisions import Passage, Verse
 import bible
+import run_pane
 
 class HapaxLegomena(Plugin):
     def __init__(self):
@@ -20,6 +21,10 @@ class HapaxLegomena(Plugin):
         self.id = "hapax_legomena.HapaxLegomena"
 
         self.enabled = True
+
+        #Register the run pane to access the progress bar
+        for t in run_pane.RunPane.getinstances():
+            self.active_run_pane = t
 
     def ScanPassages(self, passages):
         # Set up a state
@@ -63,6 +68,8 @@ class HapaxLegomena(Plugin):
                         if self.settings["Save Verses"].value == True:
                             self.SaveVerse(matches, word, index, passage, col_name)
             index+=1
+            #increase the progress bar
+            self.active_run_pane.pbar.setValue(self.active_run_pane.pbar.value() + len(passage))
         return self.state
 
     def SaveVerse(self, matches, word, index, passage, col_name):

@@ -1,5 +1,6 @@
 from plugins.plugin import Plugin, Setting
 from divisions import Verse
+import run_pane
 
 class CountWord(Plugin):
     def __init__(self):
@@ -18,6 +19,10 @@ class CountWord(Plugin):
         self.id = "count_word.CountWord"
 
         self.enabled = True
+
+        #Register the run pane to access the progress bar
+        for t in run_pane.RunPane.getinstances():
+            self.active_run_pane = t
         
 
     def ScanPassages(self, passages_df_list):
@@ -57,6 +62,7 @@ class CountWord(Plugin):
         #Check in each passage df
         for df in passages_df_list:
             #For each search term
+
             for word in self.settings["Search Terms: "].value: 
                 #If this is not the verse tracking column and not the totals column
                 if word != "Verses with Words" and word != total_col_header:
@@ -103,6 +109,8 @@ class CountWord(Plugin):
                         #Save this to the cell
                         self.state["Verses with Words"][index] += word_and_verses
             index+=1
+            #increase the progress bar
+            self.active_run_pane.pbar.setValue(self.active_run_pane.pbar.value() + len(df))
 
         return self.state
         

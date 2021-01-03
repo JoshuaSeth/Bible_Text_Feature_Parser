@@ -1,6 +1,7 @@
 from plugins.plugin import Plugin, Setting
 import pandas as pd
 from divisions import Verse
+import run_pane
 
 
 class CountMorphology(Plugin):
@@ -22,6 +23,10 @@ class CountMorphology(Plugin):
         #Load the mappings
         self.mappings = pd.read_csv("data/rmac.tsv", sep="\t")
         self.mappings = pd.Series(self.mappings.Description.values,index=self.mappings.RMAC).to_dict()
+
+        #Register the run pane to access the progress bar
+        for t in run_pane.RunPane.getinstances():
+            self.active_run_pane = t
 
 
     # Is called when the scan starts
@@ -64,6 +69,8 @@ class CountMorphology(Plugin):
                         verse_string = Verse(row=row).GetString() + ":" + row["Greek_Word"] + ", "
                         #Add it to the state
                         self.state["Morphology Verses and Words"][index]+= verse_string
+                #increase the progress bar
+                self.active_run_pane.pbar.setValue(self.active_run_pane.pbar.value() + 1)
 
             #Track
             index+=1

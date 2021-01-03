@@ -1,6 +1,7 @@
 from passages_pane import PassagePane
 from plugins_pane import PluginsPane
 from data_pane import DataPane
+import run_pane
 import bible
 import pandas as pd
 from table import DataFrameModel
@@ -23,6 +24,20 @@ def Scan():
     for passage in passage_pane.GetPassages():
         df = bible.GetPassage(passage)
         passages_dfs.append(df)
+    
+    #Set the progress bar max value
+    #Get the run pane
+    for t  in run_pane.RunPane.getinstances():
+        active_run_pane = t
+
+    #Get the number of plugins running on the data times the amount of passages times rows per df
+    num_plugins = len(plugins_pane.active_plugins)
+    total_rows = 0
+    for passage_df in passages_dfs:
+        total_rows+=len(passage_df)
+
+    #Set max value of prog bar to plugins times passages
+    active_run_pane.pbar.setMaximum(num_plugins * total_rows)
 
     #Then send the last of passage df's to every plugin
     #Results we be a list of dicts with lists

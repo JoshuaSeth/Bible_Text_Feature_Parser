@@ -4,9 +4,26 @@ from PyQt5.QtGui import *
 from input_list import InputList
 import os
 import scan
+import weakref
 
 class RunPane(QGroupBox):
+    _instances = set()
+
+    @classmethod
+    def getinstances(cls):
+        dead = set()
+        for ref in cls._instances:
+            obj = ref()
+            if obj is not None:
+                yield obj
+            else:
+                dead.add(ref)
+        cls._instances -= dead
+
     def __init__(self):
+        #Register this instance
+        self._instances.add(weakref.ref(self))
+
         #Initialize element
         super(RunPane, self).__init__()
 
