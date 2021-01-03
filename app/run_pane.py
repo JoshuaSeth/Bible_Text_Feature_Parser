@@ -11,7 +11,7 @@ class RunPane(QGroupBox):
         super(RunPane, self).__init__()
 
         #Give this widget a layout
-        self.cur_layout = QVBoxLayout()
+        self.cur_layout = QHBoxLayout()
         self.setLayout(self.cur_layout)
         self.cur_layout.setAlignment(Qt.AlignRight)
 
@@ -23,7 +23,16 @@ class RunPane(QGroupBox):
         self.run = QPushButton("Run")
         self.run.setMaximumWidth(200)
         self.run.setMinimumWidth(200)
-        
+
+        # creating progress bar 
+        self.pbar = QProgressBar(self)
+        self.pbar.setValue(20)
+  
+        # setting its geometry 
+        # self.pbar.setGeometry(0, 0, 200, 25) 
+
+        self.cur_layout.addWidget(self.pbar)   
+            
 
         #Connect it to running the script
         self.run.clicked.connect(scan.Scan)
