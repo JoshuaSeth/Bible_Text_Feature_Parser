@@ -17,16 +17,17 @@ def OpenFile(is_workspace=False):
     if not is_workspace:
         fname = QFileDialog.getOpenFileName()
         #If the cancel button wasn pressed
-        if fname is not None:
+        if fname is not None and fname != "":
             return _LoadList(fname[0])
         else:
             return None
     else:
         filters = "Workspaces (*.workspace)"
         selected_filter = "Workspaces (*.workspace)"
-        fname = QFileDialog.getOpenFileName(filter=filters,initialFilter= selected_filter)
+        fname, ok = QFileDialog.getOpenFileName(filter=filters,initialFilter= selected_filter)
         #If the cancel button wasn pressed
-        if fname is not None:
+        if fname is not None and fname != "" and ok:
+            print("opening",fname, ok)
             fname = fname[0]
             _OpenWorkspace(fname)
 
