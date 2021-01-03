@@ -82,13 +82,15 @@ class CountWord(Plugin):
                         self.state[total_col_header][index] += num_word_in_col
                     
                     #If we want to save the verse occurences
-                    if self.settings["Save Verses"].value == True:
+                    if self.settings["Save Verses"].value == True and not matches.empty:
                         #Save the matching verses
                         matching_verses = []
                         #Iterate over the verses that matches
-                        for row in matches.itertuples():
+                        for row in matches.iterrows():
                             #Make a verse for each row and save it's string
-                            verse_string = Verse(row=row).GetString()
+                            # print("\n\n",row, type(row),  "\n\n")
+                            # print("\n\n",type(row[0]), type(row[1]),  "\n\n")
+                            verse_string = Verse(row=row[1]).GetString()
                             #Save to the verses list_val
                             matching_verses.append(verse_string)
 

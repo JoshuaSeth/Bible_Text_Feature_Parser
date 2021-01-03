@@ -1,6 +1,7 @@
 import book_names as bn
 import re
 import pandas as pd
+pd.options.mode.chained_assignment = None
 
 class Verse:
     def __init__(self, string="", previous_verse=None, row=None):
@@ -10,7 +11,8 @@ class Verse:
             self.CreateFromString(string, previous_verse)
         #Else if a dataframe row was passed
         if type(row) is pd.Series:
-                    #Get the data from the relevant columns
+                #Get the data from the relevant columns
+                print('series or frame')
                 self.book = int(row["Book"])
                 self.chapter = int(row["Chapter"])
                 self.verse = int(row["Verse"])
