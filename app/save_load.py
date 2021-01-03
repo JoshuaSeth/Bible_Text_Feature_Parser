@@ -24,10 +24,10 @@ def OpenFile(is_workspace=False):
     else:
         filters = "Workspaces (*.workspace)"
         selected_filter = "Workspaces (*.workspace)"
-        fname, ok = QFileDialog.getOpenFileName(filter=filters,initialFilter= selected_filter)
+        fname = QFileDialog.getOpenFileName(filter=filters,initialFilter= selected_filter)
         #If the cancel button wasn pressed
-        if fname is not None and fname != "" and ok:
-            print("opening",fname, ok)
+        if fname is not None and fname[0] != "" and type(fname) is not str:
+            print("opening",fname)
             fname = fname[0]
             _OpenWorkspace(fname)
 
