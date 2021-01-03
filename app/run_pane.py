@@ -43,7 +43,7 @@ class RunPane(QGroupBox):
 
         # creating progress bar 
         self.pbar = QProgressBar(self)
-        self.pbar.setValue(20)
+        self.pbar.setValue(0)
   
         # setting its geometry 
         # self.pbar.setGeometry(0, 0, 200, 25) 

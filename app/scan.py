@@ -35,8 +35,10 @@ def Scan():
     total_rows = 0
     for passage_df in passages_dfs:
         total_rows+=len(passage_df)
+        print(len(passage_df))
 
     #Set max value of prog bar to plugins times passages
+    print("PROGBAR",num_plugins, total_rows, num_plugins * total_rows)
     active_run_pane.pbar.setMaximum(num_plugins * total_rows)
 
     #Then send the last of passage df's to every plugin

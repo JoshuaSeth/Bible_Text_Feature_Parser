@@ -60,6 +60,7 @@ class CountWord(Plugin):
 
         index = 0
         #Check in each passage df
+        
         for df in passages_df_list:
             #For each search term
 
