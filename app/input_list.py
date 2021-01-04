@@ -195,8 +195,12 @@ class InputList(QGroupBox):
         #Concatenate to something nice
         total = "Terms:  {}, {}, {} ... {}, {}, {}".format(first_word, second_word, third_word, third_last_word, sec_last_word, last_word)
         #Display information about first and last words
-        label2 = QLabel(total)
-        self.top_layout.addWidget(label2)
+        list_content_label = QLabel(total)
+
+        #Wrap it so it spans multiple lines if needed
+        list_content_label.setWordWrap(True)
+
+        self.top_layout.addWidget(list_content_label)
 
         #We are now in longlist mode
         self.long_list=True
