@@ -76,7 +76,8 @@ class RunPane(QGroupBox):
         data_pane.Display(current_results_buffer)
 
     def SetProgressVal(self, val):
-        self.pbar.setValue(val)
+        print(self.pbar.value())
+        self.pbar.setValue(self.pbar.value() + val)
     
     def SetMaxVal(self, val):
         self.pbar.setMaximum(val)

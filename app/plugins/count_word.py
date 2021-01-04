@@ -1,6 +1,5 @@
 from plugins.plugin import Plugin, Setting
 from divisions import Verse
-import run_pane
 
 class CountWord(Plugin):
     def __init__(self):
@@ -20,9 +19,6 @@ class CountWord(Plugin):
 
         self.enabled = True
 
-        #Register the run pane to access the progress bar
-        for t in run_pane.RunPane.getinstances():
-            self.active_run_pane = t
         
 
     def ScanPassages(self, passages_df_list, thread=None):
@@ -111,7 +107,7 @@ class CountWord(Plugin):
                         self.state["Verses with Words"][index] += word_and_verses
             index+=1
             #increase the progress bar
-            thread.change_value.emit(self.active_run_pane.pbar.value() + len(df))
+            thread.change_value.emit(len(df))
 
         return self.state
         
