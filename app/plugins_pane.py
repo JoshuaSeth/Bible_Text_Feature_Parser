@@ -79,6 +79,7 @@ class PluginsPane(QGroupBox):
         self.cur_layout.addWidget(scroll)
         scroll.setWidget(self.temp_widget)
         scroll.setWidgetResizable(True)
+        
 
         #Load all the plugin classes
         self.LoadAllPlugins()

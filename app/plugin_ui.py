@@ -14,6 +14,9 @@ class PluginUI(QGroupBox):
         #Give this widget a layout
         layout = QVBoxLayout()
 
+        #Make sure plugins do not weirdly stretch because of their contents
+        self.setMaximumWidth(450)
+
         #Track the actual plugin connected
         self.plugin = plugin
 
