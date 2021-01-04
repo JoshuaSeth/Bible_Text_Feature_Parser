@@ -7,6 +7,8 @@ from run_pane import RunPane
 from data_pane import DataPane
 import dialog
 import save_load
+import os
+import sys
 
 # Subclass QMainWindow to customise your application's main window
 class MainWindow(QMainWindow):
@@ -68,7 +70,8 @@ class MainWindow(QMainWindow):
         save_action.triggered.connect(lambda x=True: save_load.SaveFile(None))
 
         
-
+basedir = os.path.dirname(sys.argv[0])
+print(basedir)
 # You need one (and only one) QApplication instance per application.
 # Pass in sys.argv to allow command line arguments for your app.
 # If you know you won't use command line arguments QApplication([]) works too.
