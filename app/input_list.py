@@ -54,8 +54,13 @@ class InputList(QGroupBox):
 
         #If we get a predefined input_list
         if input_list != None:
-            for item in input_list:
-                self.AddLineEdit(string=item)
+            #If this list has more than 20 items and we are allowed to summarize it
+            if self.allow_summary and len(input_list) > 20:
+                self.SetLongListMode(input_list)
+            #If less than 20 or no summary allowed
+            else: 
+                for item in input_list:
+                    self.AddLineEdit(string=item)
         #If we did not get a predefined list
         else:
             self.AddLineEdit()
@@ -134,12 +139,13 @@ class InputList(QGroupBox):
         self.Clear()
         
         #If it is not a too long list
-        if len(input_list) < 41 or not self.allow_summary:
+        if len(input_list) < 21 or not self.allow_summary:
             #Then
             for item in input_list:
                 self.AddLineEdit(string=str(item).replace("\n", ""))
         #Else if it is to long render the list as longlistinfo
         elif self.allow_summary:
+            print("setting long list")
             self.SetLongListMode(input_list)
         
         #Notify the connected setting that the list value has changed
@@ -172,7 +178,7 @@ class InputList(QGroupBox):
             return self.start_list
 
     def SetLongListMode(self, input_list=None):
-        #Only displays information about the list if the list has to many items
+        #Only displays information about the list if the list has too many items
 
         #Display entries
         label = QLabel("{} terms".format(str(len(input_list))))

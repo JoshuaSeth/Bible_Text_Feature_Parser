@@ -63,7 +63,7 @@ def _SaveWorkspace():
 def _OpenWorkspace(fname):
     #Open a workspace to the panes
     ws = _Load(fname)
-    print(ws.__dict__)
+    # print(ws.__dict__)
 
     #Get access to the passage pane instance
     for pp in passages_pane.PassagePane.getinstances():
@@ -148,7 +148,7 @@ def _SaveList(input_list):
     df = pd.DataFrame(input_list)
     name, file_type = QFileDialog.getSaveFileUrl()
     name = name.path()
-    print(name)
+    # print(name)
     if name.endswith(".xlsx"):
         df.to_excel(name, index=False)
     if name.endswith(".csv") or name.endswith(".txt"):

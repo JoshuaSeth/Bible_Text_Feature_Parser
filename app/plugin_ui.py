@@ -99,9 +99,9 @@ class PluginUI(QGroupBox):
                 label.setFont(QFont('Arial', 16))
                 #By hooking the setting to the input list the settings contents are updated whenever one of the input fields updates
                 if len(setting.value)==0:
-                    i_list = input_list.InputList(hooked_item=setting)
+                    i_list = input_list.InputList(hooked_item=setting, allow_summary=True)
                 else:
-                    i_list = input_list.InputList(setting.value, hooked_item=setting)
+                    i_list = input_list.InputList(input_list=setting.value, hooked_item=setting, allow_summary=True)
                 layout.addWidget(i_list)
 
             index+=1
