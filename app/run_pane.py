@@ -2,9 +2,11 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from input_list import InputList
+from data_pane import DataPane
 import os
 import scan
 import weakref
+
 
 class RunPane(QGroupBox):
     _instances = set()
@@ -44,14 +46,40 @@ class RunPane(QGroupBox):
         # creating progress bar 
         self.pbar = QProgressBar(self)
         self.pbar.setValue(0)
-  
-        # setting its geometry 
-        # self.pbar.setGeometry(0, 0, 200, 25) 
 
         self.cur_layout.addWidget(self.pbar)   
-            
+        
 
         #Connect it to running the script
-        self.run.clicked.connect(scan.Scan)
+        self.run.clicked.connect(self.StartScan)
 
         self.cur_layout.addWidget(self.run)
+    
+
+    def StartScan(self):
+        self.pbar.setValue(0)
+        self.thread = scan.ScanThread()
+        self.thread.change_value.connect(self.SetProgressVal)
+        self.thread.set_max.connect(self.SetMaxVal)
+        self.thread.finish_signal.connect(self.DisplayResults)
+        self.thread.start()
+
+    def DisplayResults(self, val):
+        #Get results from the thread
+        current_results_buffer = val.current_results_buffer
+
+        #Get access to the data pane instance
+        for dp in DataPane.getinstances():
+            data_pane = dp
+        
+        #Send the results to the data pane
+        data_pane.Display(current_results_buffer)
+
+    def SetProgressVal(self, val):
+        self.pbar.setValue(val)
+    
+    def SetMaxVal(self, val):
+        self.pbar.setMaximum(val)
+  
+
+    

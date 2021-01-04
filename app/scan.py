@@ -1,12 +1,26 @@
 from passages_pane import PassagePane
 from plugins_pane import PluginsPane
-from data_pane import DataPane
 import run_pane
 import bible
 import pandas as pd
 from table import DataFrameModel
+from PyQt5.QtCore import Qt, QThread, pyqtSignal
 
-def Scan():
+
+class ScanThread(QThread):
+    current_results_buffer = None
+
+    # Create a counter thread
+    change_value = pyqtSignal(int)
+    set_max = pyqtSignal(int)
+    finish_signal = pyqtSignal(QThread)
+    def run(self):
+        self.current_results_buffer = RunScan(thread=self)  
+        self.finish_signal.emit(self)
+
+
+
+def RunScan(thread=None):
     #Get access to the passage pane instance
     for pp in PassagePane.getinstances():
         passage_pane = pp
@@ -14,10 +28,6 @@ def Scan():
     #Get access to the plugins pane instance
     for pp in PluginsPane.getinstances():
         plugins_pane = pp
-
-    #Get access to the data pane instance
-    for dp in DataPane.getinstances():
-        data_pane = dp
 
     #Save a list of the df's of passages to send to the plugins
     passages_dfs = []
@@ -38,15 +48,14 @@ def Scan():
         print(len(passage_df))
 
     #Set max value of prog bar to plugins times passages
-    print("PROGBAR",num_plugins, total_rows, num_plugins * total_rows)
-    active_run_pane.pbar.setMaximum(num_plugins * total_rows)
+    thread.set_max.emit(num_plugins * total_rows)
 
     #Then send the last of passage df's to every plugin
     #Results we be a list of dicts with lists
     results = []
     #collect the data from all plugins
     for plugin in plugins_pane.active_plugins:
-        data = plugin.ScanPassages(passages_dfs)
+        data = plugin.ScanPassages(passages_dfs, thread=thread)
         results.append(data)
 
     #By sending all passages instead of rows one can more easily debug per plugin
@@ -66,5 +75,4 @@ def Scan():
                 print(header, list_val)
                 df[header] = list_val
 
-    #Send the results to the data pane
-    data_pane.Display(df)
+    return df

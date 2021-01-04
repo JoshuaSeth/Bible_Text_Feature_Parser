@@ -35,7 +35,7 @@ class CountMorphology(Plugin):
 
         
 
-    def ScanPassages(self, passages):
+    def ScanPassages(self, passages, thread=None):
         # Set up a state
         self.state = {}
 
@@ -70,7 +70,8 @@ class CountMorphology(Plugin):
                         #Add it to the state
                         self.state["Morphology Verses and Words"][index]+= verse_string
                 #increase the progress bar
-                self.active_run_pane.pbar.setValue(self.active_run_pane.pbar.value() + 1)
+                thread.change_value.emit(self.active_run_pane.pbar.value() + 1)
+
 
             #Track
             index+=1

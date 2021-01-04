@@ -25,7 +25,7 @@ class CountWord(Plugin):
             self.active_run_pane = t
         
 
-    def ScanPassages(self, passages_df_list):
+    def ScanPassages(self, passages_df_list, thread=None):
         #Needs to have any assignment for code curther
         total_col_header ="-"
 
@@ -111,7 +111,7 @@ class CountWord(Plugin):
                         self.state["Verses with Words"][index] += word_and_verses
             index+=1
             #increase the progress bar
-            self.active_run_pane.pbar.setValue(self.active_run_pane.pbar.value() + len(df))
+            thread.change_value.emit(self.active_run_pane.pbar.value() + len(df))
 
         return self.state
         
