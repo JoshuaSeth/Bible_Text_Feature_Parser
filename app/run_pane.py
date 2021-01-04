@@ -6,6 +6,7 @@ from data_pane import DataPane
 import os
 import scan
 import weakref
+import save_load
 
 
 class RunPane(QGroupBox):
@@ -63,6 +64,10 @@ class RunPane(QGroupBox):
         #A button to export the data
         self.export_button = QPushButton("Export Results")
         self.export_button.setMaximumWidth(200)
+        #Get access to the data pane instance
+        for dp in DataPane.getinstances():
+            data_pane = dp
+        self.export_button.clicked.connect(lambda x : save_load.SaveFile(data_pane.active_results_df))
         # self.export_button.setMinimumHeight(20)
         self.buttons_container.addWidget(self.export_button)
     
