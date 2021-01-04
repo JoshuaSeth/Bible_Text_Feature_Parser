@@ -26,12 +26,16 @@ class DataPane(QGroupBox):
         #Initialize element
         super(DataPane, self).__init__()
 
+        #Keep track of the current dispayed df
+        self.active_results_df = None
+
+
         #Give this widget a layout
         self.cur_layout = QVBoxLayout()
         self.setLayout(self.cur_layout)
         self.setMinimumWidth(800)
 
-        #The passages title
+        #The widget title
         label = QLabel("Data")
         label.setFont(QFont('Arial', 28))
         qbox = QVBoxLayout()
@@ -39,9 +43,10 @@ class DataPane(QGroupBox):
         qbox.addWidget(label)
         self.cur_layout.addLayout(qbox)
 
+        #The box that will later contain the table view
         self.data_box=QVBoxLayout()
         self.cur_layout.addLayout(self.data_box)
-   
+
 
         #Make layout start at top instead of middle
         self.cur_layout.setAlignment(Qt.AlignTop)
@@ -53,5 +58,6 @@ class DataPane(QGroupBox):
     def Display(self, df):
         #Convert the dataframe to a PYQt table
         model = DataFrameModel(df)
+        self.active_results_df = df
 
         self.table_view.setModel(model)

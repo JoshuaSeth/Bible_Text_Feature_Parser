@@ -48,7 +48,6 @@ class MainWindow(QMainWindow):
 
         #Run program Pane
         rpp = RunPane()
-        rpp.setMaximumHeight(60)
         run_data.addWidget(rpp)
 
         #Make a menu bar

@@ -34,26 +34,37 @@ class RunPane(QGroupBox):
         self.setLayout(self.cur_layout)
         self.cur_layout.setAlignment(Qt.AlignRight)
 
-        #The run title
+        
+
+        #Set the general layout
         qbox = QVBoxLayout()
         qbox.setAlignment(Qt.AlignCenter)
         self.cur_layout.addLayout(qbox)
 
-        self.run = QPushButton("Run")
-        self.run.setMaximumWidth(200)
-        self.run.setMinimumWidth(200)
-
         # creating progress bar 
         self.pbar = QProgressBar(self)
         self.pbar.setValue(0)
+        self.cur_layout.addWidget(self.pbar)
 
-        self.cur_layout.addWidget(self.pbar)   
-        
+        #Create small container to put run and export button above each other
+        self.temp_container = QGroupBox()
+        self.cur_layout.addWidget(self.temp_container)
+        self.buttons_container = QVBoxLayout()
+        self.temp_container.setLayout(self.buttons_container)
+        self.temp_container.setFixedHeight(80)
 
-        #Connect it to running the script
+        #Create the run button
+        self.run = QPushButton("Run")
+        self.run.setMaximumWidth(200)
+        # self.run.setMinimumHeight(20)
         self.run.clicked.connect(self.StartScan)
+        self.buttons_container.addWidget(self.run)
 
-        self.cur_layout.addWidget(self.run)
+        #A button to export the data
+        self.export_button = QPushButton("Export Results")
+        self.export_button.setMaximumWidth(200)
+        # self.export_button.setMinimumHeight(20)
+        self.buttons_container.addWidget(self.export_button)
     
 
     def StartScan(self):
